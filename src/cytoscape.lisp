@@ -50,9 +50,9 @@
      :initarg :data
      :initform nil
      :trait :dict)
-    (%position
+    (position
      :accessor %position
-     :initarg :%position
+     :initarg :position
      :initform nil
      :trait :dict))
   (:metaclass jupyter-widgets:trait-metaclass)
