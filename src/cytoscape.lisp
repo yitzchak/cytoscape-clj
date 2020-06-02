@@ -50,7 +50,7 @@
      :initarg :data
      :initform nil
      :trait :dict)
-    (position
+   (position
      :accessor %position
      :initarg :position
      :initform nil
