@@ -1,7 +1,9 @@
 (defpackage #:cytoscape
   (:use #:common-lisp)
   (:export
-    #:add-graph-from-json
+    #:add-graph
+    #:autolock
+    #:auto-ungrabify
     #:auto-unselectify
     #:box-selection-enabled
     #:classes
@@ -9,20 +11,35 @@
     #:cytoscape-style
     #:cytoscape-widget
     #:data
+    #:desktop-tap-threshold
     #:edge
     #:edges
     #:grabbable
     #:grabbed
     #:graph
     #:group
+    #:headless
+    #:hide-edges-on-viewport
     #:locked
+    #:max-zoom
+    #:min-zoom
+    #:motion-blur
+    #:motion-blur-opacity
     #:node
     #:nodes
+    #:panning-enabled
     #:position
     #:removed
     #:rendered-position
     #:selectable
     #:selected
+    #:selection-type
+    #:style-enabled
+    #:texture-on-viewport
     #:tooltip-source
-    #:zoom))
+    #:touch-tap-threshold
+    #:user-panning-enabled
+    #:wheel-sensitivity
+    #:zoom
+    #:zooming-enabled))
 

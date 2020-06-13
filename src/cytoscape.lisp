@@ -99,23 +99,45 @@
     :%view-module-version +module-version+))
 
 
-(defun add-graph-from-json (instance json)
+(defgeneric add-graph (instance value))
+
+(defmethod add-graph ((instance graph) (value list))
   (setf (nodes instance)
         (mapcar (lambda (j)
                   (make-instance 'node :data (cdr (jsown:val j "data"))))
-                (jsown:val json "nodes"))
+                (jsown:val value "nodes"))
 
         (edges instance)
         (mapcar (lambda (j)
                   (make-instance 'edge :data (cdr (jsown:val j "data"))))
-                (jsown:val json "edges")))
+                (jsown:val value "edges")))
   (values))
 
 
 (defclass cytoscape-widget (jupyter-widgets:dom-widget)
-  ((auto-unselectify
-     :accessor auto-unselectify
-     :initarg :auto-unselectify
+  ((min-zoom
+     :accessor min-zoom
+     :initarg :min-zoom
+     :initform 1d-50
+     :trait :float)
+   (max-zoom
+     :accessor max-zoom
+     :initarg :max-zoom
+     :initform 1d50
+     :trait :float)
+   (zooming-enabled
+     :accessor zooming-enabled
+     :initarg :zooming-enabled
+     :initform t
+     :trait :bool)
+   (panning-enabled
+     :accessor panning-enabled
+     :initarg :panning-enabled
+     :initform t
+     :trait :bool)
+   (user-panning-enabled
+     :accessor user-panning-enabled
+     :initarg :panning-enabled
      :initform t
      :trait :bool)
    (box-selection-enabled
@@ -123,6 +145,71 @@
      :initarg :box-selection-enabled
      :initform nil
      :trait :bool)
+   (selection-type
+     :accessor selection-type
+     :initarg :selection-type
+     :initform "single"
+     :trait :unicode)
+   (touch-tap-threshold
+     :accessor touch-tap-threshold
+     :initarg :touch-tap-threshold
+     :initform 8
+     :trait :int)
+   (desktop-tap-threshold
+     :accessor desktop-tap-threshold
+     :initarg :desktop-tap-threshold
+     :initform 4
+     :trait :int)
+   (autolock
+     :accessor autolock
+     :initarg :autolock
+     :initform nil
+     :trait :bool)
+   (auto-ungrabify
+     :accessor auto-ungrabify
+     :initarg :auto-ungrabify
+     :initform nil
+     :trait :bool)
+   (auto-unselectify
+     :accessor auto-unselectify
+     :initarg :auto-unselectify
+     :initform t
+     :trait :bool)
+   (headless
+     :accessor headless
+     :initarg :headless
+     :initform nil
+     :trait :bool)
+   (style-enabled
+     :accessor style-enabled
+     :initarg :style-enabled
+     :initform t
+     :trait :bool)
+   (hide-edges-on-viewport
+     :accessor hide-edges-on-viewport
+     :initarg :hide-edges-on-viewport
+     :initform nil
+     :trait :bool)
+   (texture-on-viewport
+     :accessor texture-on-viewport
+     :initarg :texture-on-viewport
+     :initform nil
+     :trait :bool)
+   (motion-blur
+     :accessor motion-blur
+     :initarg :motion-blur
+     :initform nil
+     :trait :bool)
+   (motion-blur-opacity
+     :accessor motion-blur-opacity
+     :initarg :motion-blur-opacity
+     :initform 0.2
+     :trait :float)
+   (wheel-sensitivity
+     :accessor wheel-sensitivity
+     :initarg :wheel-sensitivity
+     :initform 1.0
+     :trait :float)
    (cytoscape-layout
      :accessor cytoscape-layout
      :initarg :cytoscape-layout
@@ -131,19 +218,7 @@
    (cytoscape-style
      :accessor cytoscape-style
      :initarg :cytoscape-style
-     :initform (list (jsown:new-js
-                       ("selector" "node")
-                       ("css" (jsown:new-js
-                                ("background-color" "#11479e"))))
-                     (jsown:new-js
-                       ("selector" "node:parent")
-                       ("css" (jsown:new-js
-                                ("background-opacity" 0.333))))
-                     (jsown:new-js
-                       ("selector" "edge")
-                       ("style" (jsown:new-js
-                                  ("width" 4)
-                                  ("line-color" "#9dbaea")))))
+     :initform nil
      :trait :json)
    (zoom
      :accessor zoom
@@ -177,4 +252,7 @@
     :%view-module +module-name+
     :%view-module-version +module-version+))
 
+
+(defmethod add-graph ((instance cytoscape-widget) value)
+  (add-graph (graph instance) value))
 
