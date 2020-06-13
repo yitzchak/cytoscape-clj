@@ -94,11 +94,6 @@
   "jupyterlab": {
     "extension": "lib/plugin"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "*.ts": [
       "eslint . --ext .ts --fix"
