@@ -1,7 +1,7 @@
 (in-package :cytoscape)
 
 (defparameter +module-name+ "cl-cytoscape")
-(defparameter +module-version+ "0.1.2")
+(defparameter +module-version+ "0.1.36")
 
 
 (defclass element (jupyter-widgets:widget)
@@ -164,7 +164,7 @@
    (cytoscape-layout
      :accessor cytoscape-layout
      :initarg :cytoscape-layout
-     :initform (list (cons "name" "cola"))
+     :initform '(("name" . "cola"))
      :trait :dict)
    (cytoscape-style
      :accessor cytoscape-style
