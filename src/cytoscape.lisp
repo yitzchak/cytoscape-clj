@@ -1,7 +1,7 @@
 (in-package :cytoscape)
 
 (defparameter +module-name+ "cl-cytoscape")
-(defparameter +module-version+ "0.1.36")
+(defparameter +module-version+ "0.1.38")
 
 
 (defclass element (jupyter-widgets:widget)
