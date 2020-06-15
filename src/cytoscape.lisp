@@ -1,7 +1,7 @@
 (in-package :cytoscape)
 
 (defparameter +module-name+ "cl-cytoscape")
-(defparameter +module-version+ "0.1.38")
+(defparameter +module-version+ "0.1.44")
 
 
 (defclass element (jupyter-widgets:widget)
@@ -161,14 +161,14 @@
      :initarg :wheel-sensitivity
      :initform 1.0
      :trait :float)
-   (cytoscape-layout
-     :accessor cytoscape-layout
-     :initarg :cytoscape-layout
+   (graph-layout
+     :accessor graph-layout
+     :initarg :graph-layout
      :initform '(("name" . "cola"))
      :trait :dict)
-   (cytoscape-style
-     :accessor cytoscape-style
-     :initarg :cytoscape-style
+   (graph-style
+     :accessor graph-style
+     :initarg :graph-style
      :initform nil
      :trait :json)
    (zoom
@@ -176,14 +176,6 @@
      :initarg :zoom
      :initform 2.0
      :trait :float)
-   (rendered-position
-     :accessor rendered-position
-     :initarg :rendered-position
-     :initform (jsown:new-js
-                 ("renderedPosition" (jsown:new-js
-                                       ("x" 100)
-                                       ("y" 100))))
-     :trait :json)
    (tooltip-source
      :accessor tooltip-source
      :initarg :tooltip-source

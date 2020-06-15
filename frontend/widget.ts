@@ -74,9 +74,8 @@ export class CytoscapeModel extends DOMWidgetModel {
       _view_module_version: CytoscapeModel.view_module_version,
 
       elements: [],
-      cytoscape_style: [],
-      cytoscape_layout: {},
-      rendered_position: {},
+      graph_style: [],
+      graph_layout: {},
 
       zoom: 1,
       pan: { x: 0, y: 0 },
@@ -124,7 +123,6 @@ export class CytoscapeModel extends DOMWidgetModel {
 export class ElementView extends WidgetView {
   cytoscape_obj: any;
   is_rendered = false;
-  selector: string = "";
 
   constructor(params: any) {
     super({
@@ -135,12 +133,12 @@ export class ElementView extends WidgetView {
 
     this.model.on('change:selected', this.selected_changed, this);
     this.model.on('change:selectable', this.selectable_changed, this);
-    // this.model.on('change:removed', this.removedChanged, this);
+    this.model.on('change:removed', this.removed_changed, this);
     this.model.on('change:locked', this.locked_changed, this);
     this.model.on('change:grabbable', this.grabbable_changed, this);
     this.model.on('change:classes', this.classes_changed, this);
     this.model.on('change:data', this.data_changed, this);
-    // this.model.on('change:position', this.positionChanged, this);
+    this.model.on('change:position', this.position_changed, this);
   }
 
   getElements() {
@@ -160,6 +158,14 @@ export class ElementView extends WidgetView {
       this.getElements().selectify();
     } else {
       this.getElements().unselectify();
+    }
+  }
+
+  removed_changed() {
+    if (this.model.get('removed')) {
+      this.getElements().remove();
+    } else {
+      this.getElements().restore();
     }
   }
 
@@ -185,6 +191,10 @@ export class ElementView extends WidgetView {
 
   data_changed() {
     this.getElements().data(Object.assign({ _cid: this.cid }, this.model.get('data')));
+  }
+
+  position_changed() {
+    this.getElements().position(this.model.get('position'));
   }
 
   render() {
@@ -252,7 +262,7 @@ export class CytoscapeView extends DOMWidgetView {
           motionBlur: this.model.get('motion_blur'),
           motionBlurOpacity: this.model.get('motion_blur_opacity'),
           wheelSensitivity: this.model.get('wheel_sensitivity'),
-          style: this.model.get('cytoscape_style')
+          style: this.model.get('graph_style')
         });
 
         this.cytoscape_obj.on('add', async (e: any) => {
@@ -327,14 +337,14 @@ export class CytoscapeView extends DOMWidgetView {
           }
         });
 
-        // this.cytoscape_obj.on('position', async (e: any) => {
-        //   const view = await this.findElementView(e.target.data('_cid'));
+        this.cytoscape_obj.on('position', async (e: any) => {
+          const view = await this.findElementView(e.target.data('_cid'));
 
-        //   if (view) {
-        //     view.model.set('position', e.position);
-        //     view.model.save_changes();
-        //   }
-        // });
+          if (view) {
+            view.model.set('position', e.target.position());
+            view.model.save_changes();
+          }
+        });
 
         this.cytoscape_obj.on('click', (e: any) => {
           const element = e.target;
@@ -397,14 +407,6 @@ export class CytoscapeView extends DOMWidgetView {
             this.cytoscape_obj.selectionType(this.model.get('selection_type'));
           }, this);
 
-        // this.model.on('change:touch_tap_threshold', () => {
-        //     this.cytoscape_obj.touchTapThreshold(this.model.get('touch_tap_threshold'));
-        //   }, this);
-
-        // this.model.on('change:desktop_tap_threshold', () => {
-        //     this.cytoscape_obj.desktopTapThreshold(this.model.get('desktop_tap_threshold'));
-        //   }, this);
-
         this.model.on('change:autolock', () => {
             this.cytoscape_obj.autolock(this.model.get('autolock'));
           }, this);
@@ -417,11 +419,11 @@ export class CytoscapeView extends DOMWidgetView {
             this.cytoscape_obj.autounselectify(this.model.get('auto_unselectify'));
           }, this);
 
-        this.model.on('change:cytoscape_style', () => {
-            this.cytoscape_obj.style(this.model.get('cytoscape_style'));
+        this.model.on('change:graph_style', () => {
+            this.cytoscape_obj.style(this.model.get('graph_style'));
           }, this);
 
-        this.model.on('change:cytoscape_layout', this.cytoscape_layout_changed, this);
+        this.model.on('change:graph_layout', this.graph_layout_changed, this);
 
         this.cytoscape_obj.ready(() => this.elements_changed());
       });
@@ -431,11 +433,11 @@ export class CytoscapeView extends DOMWidgetView {
   elements_changed() {
     this.elementViews.update(this.model.get('elements'))
       .then((views: Array<any>) => Promise.all(views.map((view: any) => view.render())))
-      .then(() => this.cytoscape_layout_changed());
+      .then(() => this.graph_layout_changed());
   }
 
-  cytoscape_layout_changed() {
-    let layout = this.model.get('cytoscape_layout');
+  graph_layout_changed() {
+    let layout = this.model.get('graph_layout');
     this.layout = layout ? this.cytoscape_obj.layout(layout) : null;
     if (this.layout) this.layout.run();
   }

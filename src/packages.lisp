@@ -7,8 +7,8 @@
     #:auto-unselectify
     #:box-selection-enabled
     #:classes
-    #:cytoscape-layout
-    #:cytoscape-style
+    #:graph-layout
+    #:graph-style
     #:cytoscape-widget
     #:data
     #:desktop-tap-threshold
@@ -27,7 +27,6 @@
     #:panning-enabled
     #:position
     #:removed
-    #:rendered-position
     #:selectable
     #:selected
     #:selection-type
