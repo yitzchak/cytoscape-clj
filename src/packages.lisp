@@ -7,16 +7,15 @@
     #:auto-unselectify
     #:box-selection-enabled
     #:classes
-    #:cytoscape-layout
-    #:cytoscape-style
+    #:graph-layout
+    #:graph-style
     #:cytoscape-widget
     #:data
     #:desktop-tap-threshold
-    #:edge
-    #:edges
+    #:element
+    #:elements
     #:grabbable
     #:grabbed
-    #:graph
     #:group
     #:headless
     #:hide-edges-on-viewport
@@ -25,12 +24,9 @@
     #:min-zoom
     #:motion-blur
     #:motion-blur-opacity
-    #:node
-    #:nodes
     #:panning-enabled
     #:position
     #:removed
-    #:rendered-position
     #:selectable
     #:selected
     #:selection-type

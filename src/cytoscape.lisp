@@ -1,10 +1,10 @@
 (in-package :cytoscape)
 
-(defparameter +module-name+ "jupyter-cytoscape")
-(defparameter +module-version+ "^0.2.2")
+(defparameter +module-name+ "cl-cytoscape")
+(defparameter +module-version+ "0.1.44")
 
 
-(defclass part (jupyter-widgets:widget)
+(defclass element (jupyter-widgets:widget)
   ((group
      :accessor group
      :initarg :group
@@ -23,7 +23,7 @@
    (selectable
      :accessor selectable
      :initarg :selectable
-     :initform nil
+     :initform t
      :trait :bool)
    (locked
      :accessor locked
@@ -38,13 +38,13 @@
    (grabbable
      :accessor grabbable
      :initarg :grabbable
-     :initform nil
+     :initform t
      :trait :bool)
    (classes
      :accessor classes
      :initarg :classes
-     :initform ""
-     :trait :unicode)
+     :initform nil
+     :trait :list)
    (data
      :accessor data
      :initarg :data
@@ -57,61 +57,12 @@
      :trait :dict))
   (:metaclass jupyter-widgets:trait-metaclass)
   (:default-initargs
+    :%model-name "ElementModel"
     :%model-module +module-name+
     :%model-module-version +module-version+
+    :%view-name "ElementView"
     :%view-module +module-name+
     :%view-module-version +module-version+))
-
-
-
-(defclass edge (part)
-  ()
-  (:metaclass jupyter-widgets:trait-metaclass)
-  (:default-initargs
-    :%model-name "EdgeModel"))
-
-
-(defclass node (part)
-  ()
-  (:metaclass jupyter-widgets:trait-metaclass)
-  (:default-initargs
-    :%model-name "NodeModel"
-    :%view-name "NodeView"))
-
-
-(defclass graph (jupyter-widgets:widget)
-  ((nodes
-     :accessor nodes
-     :initarg :nodes
-     :initform nil
-     :trait :widget-list)
-   (edges
-     :accessor edges
-     :initarg :edges
-     :initform nil
-     :trait :widget-list))
-  (:metaclass jupyter-widgets:trait-metaclass)
-  (:default-initargs
-    :%model-name "GraphModel"
-    :%model-module +module-name+
-    :%model-module-version +module-version+
-    :%view-module +module-name+
-    :%view-module-version +module-version+))
-
-
-(defgeneric add-graph (instance value))
-
-(defmethod add-graph ((instance graph) (value list))
-  (setf (nodes instance)
-        (mapcar (lambda (j)
-                  (make-instance 'node :data (cdr (jsown:val j "data"))))
-                (jsown:val value "nodes"))
-
-        (edges instance)
-        (mapcar (lambda (j)
-                  (make-instance 'edge :data (cdr (jsown:val j "data"))))
-                (jsown:val value "edges")))
-  (values))
 
 
 (defclass cytoscape-widget (jupyter-widgets:dom-widget)
@@ -143,7 +94,7 @@
    (box-selection-enabled
      :accessor box-selection-enabled
      :initarg :box-selection-enabled
-     :initform nil
+     :initform t
      :trait :bool)
    (selection-type
      :accessor selection-type
@@ -173,7 +124,7 @@
    (auto-unselectify
      :accessor auto-unselectify
      :initarg :auto-unselectify
-     :initform t
+     :initform nil
      :trait :bool)
    (headless
      :accessor headless
@@ -210,14 +161,14 @@
      :initarg :wheel-sensitivity
      :initform 1.0
      :trait :float)
-   (cytoscape-layout
-     :accessor cytoscape-layout
-     :initarg :cytoscape-layout
-     :initform (list (cons "name" "cola"))
+   (graph-layout
+     :accessor graph-layout
+     :initarg :graph-layout
+     :initform '(("name" . "cola"))
      :trait :dict)
-   (cytoscape-style
-     :accessor cytoscape-style
-     :initarg :cytoscape-style
+   (graph-style
+     :accessor graph-style
+     :initarg :graph-style
      :initform nil
      :trait :json)
    (zoom
@@ -225,24 +176,16 @@
      :initarg :zoom
      :initform 2.0
      :trait :float)
-   (rendered-position
-     :accessor rendered-position
-     :initarg :rendered-position
-     :initform (jsown:new-js
-                 ("renderedPosition" (jsown:new-js
-                                       ("x" 100)
-                                       ("y" 100))))
-     :trait :json)
    (tooltip-source
      :accessor tooltip-source
      :initarg :tooltip-source
      :initform "tooltip"
      :trait :unicode)
-   (graph
-     :accessor graph
-     :initarg :graph
-     :initform (make-instance 'graph)
-     :trait :widget))
+   (elements
+     :accessor elements
+     :initarg :elements
+     :initform nil
+     :trait :widget-list))
   (:metaclass jupyter-widgets:trait-metaclass)
   (:default-initargs
     :%model-name "CytoscapeModel"
@@ -253,6 +196,13 @@
     :%view-module-version +module-version+))
 
 
-(defmethod add-graph ((instance cytoscape-widget) value)
-  (add-graph (graph instance) value))
+(defgeneric add-graph (instance value))
+
+(defmethod add-graph (instance (value list))
+  (dolist (group '("nodes" "edges"))
+    (setf (elements instance)
+          (append (elements instance)
+                  (mapcar (lambda (j)
+                            (make-instance 'element :group group :data (cdr (jsown:val j "data"))))
+                          (jsown:val value group))))))
 
