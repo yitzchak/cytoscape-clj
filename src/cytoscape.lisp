@@ -64,6 +64,8 @@
     :%view-module +module-name+
     :%view-module-version +module-version+))
 
+(jupyter-widgets:register-widget element)
+
 
 (defclass cytoscape-widget (jupyter-widgets:dom-widget)
   ((min-zoom
@@ -194,6 +196,8 @@
     :%view-name "CytoscapeView"
     :%view-module +module-name+
     :%view-module-version +module-version+))
+
+(jupyter-widgets:register-widget cytoscape-widget)
 
 
 (defgeneric add-graph (instance value))
