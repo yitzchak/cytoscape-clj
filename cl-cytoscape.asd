@@ -1,6 +1,6 @@
 (asdf:defsystem #:cl-cytoscape
-  :description "A ipycytoscape for Common Lisp."
-  :version "0.1"
+  :description "A cytoscape for Common Lisp."
+  :version "0.1.61"
   :author "Tarn W. Burton"
   :license "MIT"
   :depends-on

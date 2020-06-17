@@ -60,6 +60,10 @@ export class MenuCommandView extends WidgetView {
       options: params.options,
     });
   }
+
+  render () {
+    this.el.innerHTML = "Cytoscape menu command only usable in a Cytoscape context menu.";
+  }
 }
 
 
@@ -110,7 +114,16 @@ export class ContextMenuView extends WidgetView {
       model: params.model,
       options: params.options,
     });
+
     this.cytoscape_obj = this.options.cytoscape_obj;
+
+    this.on('remove', () => {
+      if (this.menu) {
+        this.menu.destroy();
+        this.menu = null;
+        this.is_rendered = false;
+      }
+    });
   }
 
   async getCommands() {
@@ -131,27 +144,54 @@ export class ContextMenuView extends WidgetView {
       : [];
   }
 
+  createMenu() {
+    if (this.menu) this.menu.destroy();
+
+    this.menu = this.cytoscape_obj.cxtmenu({
+      menuRadius: this.model.get('menu_radius'),
+      selector: this.model.get('selector'),
+      commands: this.getCommands.bind(this),
+      fillColor: this.model.get('fill_color'),
+      activeFillColor: this.model.get('active_fill_color'),
+      activePadding: this.model.get('active_padding'),
+      indicatorSize: this.model.get('indicator_size'),
+      separatorWidth: this.model.get('separator_width'),
+      spotlightPadding: this.model.get('spotlight_padding'),
+      minSpotlightRadius: this.model.get('min_spotlight_radius'),
+      maxSpotlightRadius: this.model.get('max_spotlight_radius'),
+      openMenuEvents: this.model.get('open_menu_events'),
+      itemColor: this.model.get('item_color'),
+      itemTextShadowColor: this.model.get('item_text_shadow_color'),
+      zIndex: this.model.get('z_index'),
+      atMouse: this.model.get('at_mouse'),
+    });
+  }
+
   render() {
-    if (!this.is_rendered) {
+    if (!this.cytoscape_obj) {
+      this.el.innerHTML = "Cytoscape context menu only usable in a Cytoscape widget.";
+    } else if (!this.is_rendered) {
       this.is_rendered = true;
-      this.menu = this.cytoscape_obj.cxtmenu({
-        menuRadius: this.model.get('menu_radius'),
-        selector: this.model.get('selector'),
-        commands: this.getCommands.bind(this),
-        fillColor: this.model.get('fill_color'),
-        activeFillColor: this.model.get('active_fill_color'),
-        activePadding: this.model.get('active_padding'),
-        indicatorSize: this.model.get('indicator_size'),
-        separatorWidth: this.model.get('separator_width'),
-        spotlightPadding: this.model.get('spotlight_padding'),
-        minSpotlightRadius: this.model.get('min_spotlight_radius'),
-        maxSpotlightRadius: this.model.get('max_spotlight_radius'),
-        openMenuEvents: this.model.get('open_menu_events'),
-        itemColor: this.model.get('item_color'),
-        itemTextShadowColor: this.model.get('item_text_shadow_color'),
-        zIndex: this.model.get('z_index'),
-        atMouse: this.model.get('at_mouse'),
-      });
+
+      this.createMenu();
+
+      this.model.on_some_change([
+        'menu_radius',
+        'selector',
+        'fill_color',
+        'active_fill_color',
+        'active_padding',
+        'indicator_size',
+        'separator_width',
+        'spotlight_padding',
+        'min_spotlight_radius',
+        'max_spotlight_radius',
+        'open_menu_events',
+        'item_color',
+        'item_text_shadow_color',
+        'z_index',
+        'at_mouse'
+      ], this.createMenu.bind(this), this);
     }
   }
 }
@@ -168,7 +208,7 @@ export class ElementModel extends WidgetModel {
       _view_module: ElementModel.view_module,
       _view_module_version: ElementModel.view_module_version,
 
-      group: '',
+      group: 'nodes',
       removed: false,
       selected: false,
       selectable: true,
@@ -328,7 +368,9 @@ export class ElementView extends WidgetView {
   }
 
   render() {
-    if (!this.is_rendered) {
+    if (!this.cytoscape_obj) {
+      this.el.innerHTML = "Cytoscape element only usable in a Cytoscape widget.";
+    } else if (!this.is_rendered) {
       this.is_rendered = true;
 
       this.cytoscape_obj.add({
