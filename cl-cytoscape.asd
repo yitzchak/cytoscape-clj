@@ -11,4 +11,6 @@
       :serial t
       :components
         ((:file "packages")
+         (:file "version")
+         (:file "context-menu")
          (:file "cytoscape")))))

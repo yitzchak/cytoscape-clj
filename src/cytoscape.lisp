@@ -1,9 +1,5 @@
 (in-package :cytoscape)
 
-(defparameter +module-name+ "cl-cytoscape")
-(defparameter +module-version+ "0.1.44")
-
-
 (defclass element (jupyter-widgets:widget)
   ((group
      :accessor group
@@ -186,6 +182,11 @@
    (elements
      :accessor elements
      :initarg :elements
+     :initform nil
+     :trait :widget-list)
+   (context-menus
+     :accessor context-menus
+     :initarg :context-menus
      :initform nil
      :trait :widget-list))
   (:metaclass jupyter-widgets:trait-metaclass)
