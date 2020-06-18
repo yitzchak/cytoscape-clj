@@ -136,9 +136,7 @@ export class ContextMenuView extends WidgetView {
             content: command.get('content'),
             contentStyle: command.get('content_style'),
             enabled: command.get('enabled'),
-            select: (ele: any) => {
-              command.send({ event: 'select', id: ele.data('id') });
-            },
+            select: (ele: any) => command.send({ event: 'select', id: ele.data('id') }),
           };
         })
       : [];
@@ -309,6 +307,12 @@ export class ElementView extends WidgetView {
     this.model.on('change:classes', this.classes_changed, this);
     this.model.on('change:data', this.data_changed, this);
     this.model.on('change:position', this.position_changed, this);
+
+    this.on('remove', () => {
+      if (this.cytoscape_obj) {
+        this.cytoscape_obj.getElements().remove();
+      }
+    });
   }
 
   getElements() {
@@ -337,6 +341,7 @@ export class ElementView extends WidgetView {
     } else {
       this.getElements().restore();
     }
+    if (this.cytoscape_obj.my_layout) this.cytoscape_obj.my_layout.run();
   }
 
   locked_changed() {
@@ -373,20 +378,21 @@ export class ElementView extends WidgetView {
     } else if (!this.is_rendered) {
       this.is_rendered = true;
 
-      this.cytoscape_obj.add({
+      let ele = this.cytoscape_obj.add({
         group: this.model.get('group'),
         data: Object.assign({ _cid: this.cid }, this.model.get('data')),
         classes: this.model.get('classes'),
         selectable: this.model.get('selectable'),
         selected: this.model.get('selected'),
       });
+
+      if (this.model.get('removed')) this.cytoscape_obj.remove(ele);
     }
   }
 }
 
 export class CytoscapeView extends DOMWidgetView {
   cytoscape_obj: any;
-  layout: any;
   is_rendered = false;
   elementViews: any;
   contextMenuViews: any;
@@ -447,6 +453,8 @@ export class CytoscapeView extends DOMWidgetView {
           wheelSensitivity: this.model.get('wheel_sensitivity'),
           style: this.model.get('graph_style')
         });
+
+        this.cytoscape_obj.my_layout = null;
 
         this.cytoscape_obj.on('add', async (e: any) => {
           const view = await this.findElementView(e.target.data('_cid'));
@@ -631,8 +639,8 @@ export class CytoscapeView extends DOMWidgetView {
 
   graph_layout_changed() {
     let layout = this.model.get('graph_layout');
-    this.layout = layout ? this.cytoscape_obj.layout(layout) : null;
-    if (this.layout) this.layout.run();
+    this.cytoscape_obj.my_layout = layout ? this.cytoscape_obj.layout(layout) : null;
+    if (this.cytoscape_obj.my_layout) this.cytoscape_obj.my_layout.run();
   }
 
   createElementView(model: any, index: any) {
