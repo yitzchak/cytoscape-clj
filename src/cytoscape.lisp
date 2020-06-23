@@ -74,7 +74,19 @@
 (jupyter-widgets:register-widget element)
 
 
-(defclass cytoscape-widget (jupyter-widgets:dom-widget)
+(defclass cytoscape-style (jupyter-widgets:style)
+  ()
+  (:metaclass jupyter-widgets:trait-metaclass)
+  (:default-initargs
+    :%model-name "CytoscapeStyleModel"
+    :%model-module +module-name+
+    :%model-module-version +module-version+)
+  (:documentation "Cytoscape style widget"))
+
+(jupyter-widgets:register-widget cytoscape-style)
+
+
+(defclass cytoscape-widget (jupyter-widgets:styled-widget)
   ((min-zoom
      :accessor min-zoom
      :initarg :min-zoom
@@ -238,6 +250,12 @@
      :initform nil
      :documentation "The stylesheet for the graph"
      :trait :json)
+   (pan
+     :accessor pan
+     :initarg :pan
+     :initform (list (cons :x 0) (cons :y 0))
+     :documentation "Pan location of the graph."
+     :trait :dict)
    (zoom
      :accessor zoom
      :initarg :zoom
@@ -270,10 +288,34 @@
     :%model-module-version +module-version+
     :%view-name "CytoscapeView"
     :%view-module +module-name+
-    :%view-module-version +module-version+))
+    :%view-module-version +module-version+
+    :style (make-instance 'cytoscape-style)))
 
 (jupyter-widgets:register-widget cytoscape-widget)
 
+(defun reset (instance)
+  (jupyter-widgets:send-custom instance
+                               (jupyter:json-new-obj
+                                 ("do" "reset"))))
+
+
+(defun center (instance)
+  (jupyter-widgets:send-custom instance
+                               (jupyter:json-new-obj
+                                 ("do" "center"))))
+
+
+(defun fit (instance &key elements (padding 0))
+  (jupyter-widgets:send-custom instance
+                               (jupyter:json-new-obj
+                                 ("do" "fit")
+                                 ("padding" padding))))
+
+
+(defun toggle-fullscreen (instance &key elements (padding 0))
+  (jupyter-widgets:send-custom instance
+                               (jupyter:json-new-obj
+                                 ("do" "toggle_fullscreen"))))
 
 (defgeneric add-graph (instance value)
   (:documentation "Add a graph to a cytoscape widget based on value type."))

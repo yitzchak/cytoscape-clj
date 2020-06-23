@@ -1,5 +1,11 @@
-.cytoscape-widget {
-  background-color: white;
-  height: 400px;
-  width: 100%;
+.__________cytoscape_container {
+    height: 100%;
+    width: 100%;
 }
+
+.jupyter-widgets.cytoscape-widget {
+    height: 400px;
+    overflow: hidden;
+    flex: 1 1 auto;
+}
+

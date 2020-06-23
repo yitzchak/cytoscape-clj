@@ -2,6 +2,7 @@ import {
   DOMWidgetModel,
   DOMWidgetView,
   ISerializers,
+  StyleModel,
   WidgetModel,
   WidgetView,
 } from '@jupyter-widgets/base';
@@ -227,6 +228,21 @@ export class ElementModel extends WidgetModel {
   static view_module_version = MODULE_VERSION;
 }
 
+export class CytoscapeStyleModel extends StyleModel {
+  defaults() {
+    return {
+      ...super.defaults(),
+      _model_name: CytoscapeStyleModel.model_name,
+      _model_module: CytoscapeStyleModel.model_module,
+      _model_module_version: CytoscapeStyleModel.model_module_version
+    };
+  }
+
+  static model_name = 'CytoscapeStyleModel';
+  static model_module = MODULE_NAME;
+  static model_module_version = MODULE_VERSION;
+}
+
 export class CytoscapeModel extends DOMWidgetModel {
   defaults() {
     return {
@@ -277,7 +293,7 @@ export class CytoscapeModel extends DOMWidgetModel {
   static serializers: ISerializers = {
     context_menus: { deserialize: widgets.unpack_models },
     elements: { deserialize: widgets.unpack_models },
-    ...WidgetModel.serializers,
+    ...DOMWidgetModel.serializers,
   };
 
   static model_name = 'CytoscapeModel';
@@ -310,7 +326,7 @@ export class ElementView extends WidgetView {
 
     this.on('remove', () => {
       if (this.cytoscape_obj) {
-        this.cytoscape_obj.getElements().remove();
+        this.getElements().remove();
       }
     });
   }
@@ -396,9 +412,10 @@ export class CytoscapeView extends DOMWidgetView {
   is_rendered = false;
   elementViews: any;
   contextMenuViews: any;
+  cy_container: any;
 
-  constructor(options?: Backbone.ViewOptions<WidgetModel> & { options?: any }) {
-    super(options || {});
+  initialize(parameters: any): void {
+    super.initialize(parameters);
     this.elementViews = new widgets.ViewList(
       this.createElementView,
       this.removeElementView,
@@ -409,6 +426,7 @@ export class CytoscapeView extends DOMWidgetView {
       this.removeContextMenuView,
       this
     );
+    this.model.on('msg:custom', this.handle_custom_message.bind(this));
   }
 
   async findElementView(cid: string) {
@@ -419,210 +437,272 @@ export class CytoscapeView extends DOMWidgetView {
     }
   }
 
+  handle_custom_message(content: any): void {
+    if (this.cytoscape_obj) {
+      this.cytoscape_obj.ready(() => {
+        switch (content.do) {
+          case 'reset':
+            this.cytoscape_obj.reset();
+            break;
+          case 'fit':
+            this.cytoscape_obj.fit();
+            break;
+          case 'center':
+            this.cytoscape_obj.center();
+            break;
+          case 'toggle_fullscreen':
+            if (document.fullscreenElement) {
+              document.exitFullscreen();
+            } else {
+              this.el.requestFullscreen();
+            }
+            break;
+        }
+      });
+    }
+  }
+
   handleEvent(event: Event): void {
     if (event.type === 'contextmenu') event.stopPropagation();
   }
 
   render() {
-    if (!this.is_rendered) {
-      this.is_rendered = true;
-      this.displayed.then(() => {
-        this.el.classList.add('cytoscape-widget');
-        this.el.addEventListener('contextmenu', this);
+    super.render();
+    this.displayed.then(() => {
 
-        this.cytoscape_obj = cytoscape({
-          container: this.el,
-          minZoom: this.model.get('min_zoom'),
-          maxZoom: this.model.get('max_zoom'),
-          zoomingEnabled: this.model.get('zooming_enabled'),
-          userZoomingEnabled: this.model.get('user_zooming_enabled'),
-          panningEnabled: this.model.get('panning_enabled'),
-          boxSelectionEnabled: this.model.get('box_selection_enabled'),
-          selectionType: this.model.get('selection_type'),
-          touchTapThreshold: this.model.get('touch_tap_threshold'),
-          desktopTapThreshold: this.model.get('desktop_tap_threshold'),
-          autolock: this.model.get('autolock'),
-          autoungrabify: this.model.get('auto_ungrabify'),
-          autounselectify: this.model.get('auto_unselectify'),
-          headless: this.model.get('headless'),
-          styleEnabled: this.model.get('style_enabled'),
-          hideEdgesOnViewport: this.model.get('hide_edges_on_viewport'),
-          textureOnViewport: this.model.get('texture_on_viewport'),
-          motionBlur: this.model.get('motion_blur'),
-          motionBlurOpacity: this.model.get('motion_blur_opacity'),
-          wheelSensitivity: this.model.get('wheel_sensitivity'),
-          style: this.model.get('graph_style')
-        });
+      this.el.classList.add('cytoscape-widget');
+      this.el.classList.add('jupyter-widgets');
+      this.el.addEventListener('contextmenu', this);
+      this.cy_container = document.createElement('div');
+      this.el.appendChild(this.cy_container);
 
-        this.cytoscape_obj.my_layout = null;
-
-        this.cytoscape_obj.on('add', async (e: any) => {
-          const view = await this.findElementView(e.target.data('_cid'));
-
-          if (view) {
-            view.model.set('removed', false);
-            view.model.save_changes();
-          }
-        });
-
-        this.cytoscape_obj.on('remove', async (e: any) => {
-          const view = await this.findElementView(e.target.data('_cid'));
-
-          if (view) {
-            view.model.set('removed', true);
-            view.model.save_changes();
-          }
-        });
-
-        this.cytoscape_obj.on('select', async (e: any) => {
-          const view = await this.findElementView(e.target.data('_cid'));
-
-          if (view) {
-            view.model.set('selected', true);
-            view.model.save_changes();
-          }
-        });
-
-        this.cytoscape_obj.on('unselect', async (e: any) => {
-          const view = await this.findElementView(e.target.data('_cid'));
-
-          if (view) {
-            view.model.set('selected', false);
-            view.model.save_changes();
-          }
-        });
-
-        this.cytoscape_obj.on('lock', async (e: any) => {
-          const view = await this.findElementView(e.target.data('_cid'));
-
-          if (view) {
-            view.model.set('locked', true);
-            view.model.save_changes();
-          }
-        });
-
-        this.cytoscape_obj.on('unlock', async (e: any) => {
-          const view = await this.findElementView(e.target.data('_cid'));
-
-          if (view) {
-            view.model.set('locked', false);
-            view.model.save_changes();
-          }
-        });
-
-        this.cytoscape_obj.on('grab', async (e: any) => {
-          const view = await this.findElementView(e.target.data('_cid'));
-
-          if (view) {
-            view.model.set('grabbed', true);
-            view.model.save_changes();
-          }
-        });
-
-        this.cytoscape_obj.on('free', async (e: any) => {
-          const view = await this.findElementView(e.target.data('_cid'));
-
-          if (view) {
-            view.model.set('grabbed', false);
-            view.model.save_changes();
-          }
-        });
-
-        this.cytoscape_obj.on('position', async (e: any) => {
-          const view = await this.findElementView(e.target.data('_cid'));
-
-          if (view) {
-            view.model.set('position', e.target.position());
-            view.model.save_changes();
-          }
-        });
-
-        this.cytoscape_obj.on('click', (e: any) => {
-          const element = e.target;
-          const ref = element.popperRef();
-          const dummyDomEle = document.createElement('div');
-
-          const tooltip_source = this.model.get('tooltip_source');
-          if (element.data()[tooltip_source]) {
-            const tip = Tippy(dummyDomEle, {
-              trigger: 'manual',
-              lazy: false,
-              arrow: true,
-              theme: 'material',
-              placement: 'bottom',
-              content: () => {
-                const content = document.createElement('div');
-                content.innerHTML = element
-                  .data()
-                  [tooltip_source].replace(/(?:\r\n|\r|\n)/g, '<br>');
-                return content;
-              },
-              onCreate: (instance: Instance | undefined) => {
-                if (instance && instance.popperInstance) {
-                  instance.popperInstance.reference = ref;
-                }
-              },
-            });
-            tip.show();
-          }
-        });
-
-        this.model.on('change:elements', this.elements_changed, this);
-
-        this.model.on('change:context_menus', this.context_menus_changed, this);
-
-        this.model.on('change:min_zoom', () => {
-            this.cytoscape_obj.minZoom(this.model.get('min_zoom'));
-          }, this);
-
-        this.model.on('change:max_zoom', () => {
-            this.cytoscape_obj.maxZoom(this.model.get('max_zoom'));
-          }, this);
-
-
-        this.model.on('change:zooming_enabled', () => {
-            this.cytoscape_obj.zoomingEnabled(this.model.get('zooming_enabled'));
-          }, this);
-
-        this.model.on('change:user_zooming_enabled', () => {
-            this.cytoscape_obj.userZoomingEnabled(this.model.get('user_zooming_enabled'));
-          }, this);
-
-        this.model.on('change:panning_enabled', () => {
-            this.cytoscape_obj.selectionType(this.model.get('panning_enabled'));
-          }, this);
-
-        this.model.on('change:box_selection_enabled', () => {
-            this.cytoscape_obj.boxSelectionEnabled(this.model.get('box_selection_enabled'));
-          }, this);
-
-        this.model.on('change:selection_type', () => {
-            this.cytoscape_obj.selectionType(this.model.get('selection_type'));
-          }, this);
-
-        this.model.on('change:autolock', () => {
-            this.cytoscape_obj.autolock(this.model.get('autolock'));
-          }, this);
-
-        this.model.on('change:auto_ungrabify', () => {
-            this.cytoscape_obj.autoungrabify(this.model.get('auto_ungrabify'));
-          }, this);
-
-        this.model.on('change:auto_unselectify', () => {
-            this.cytoscape_obj.autounselectify(this.model.get('auto_unselectify'));
-          }, this);
-
-        this.model.on('change:graph_style', () => {
-            this.cytoscape_obj.style(this.model.get('graph_style'));
-          }, this);
-
-        this.model.on('change:graph_layout', this.graph_layout_changed, this);
-
-        this.cytoscape_obj.ready(() => {
-          this.context_menus_changed();
-          this.elements_changed();
-        });
+      this.cytoscape_obj = cytoscape({
+        container: this.cy_container,
+        minZoom: this.model.get('min_zoom'),
+        maxZoom: this.model.get('max_zoom'),
+        zoomingEnabled: this.model.get('zooming_enabled'),
+        zoom: this.model.get('zoom'),
+        pan: this.model.get('pan'),
+        userZoomingEnabled: this.model.get('user_zooming_enabled'),
+        panningEnabled: this.model.get('panning_enabled'),
+        boxSelectionEnabled: this.model.get('box_selection_enabled'),
+        selectionType: this.model.get('selection_type'),
+        touchTapThreshold: this.model.get('touch_tap_threshold'),
+        desktopTapThreshold: this.model.get('desktop_tap_threshold'),
+        autolock: this.model.get('autolock'),
+        autoungrabify: this.model.get('auto_ungrabify'),
+        autounselectify: this.model.get('auto_unselectify'),
+        headless: this.model.get('headless'),
+        styleEnabled: this.model.get('style_enabled'),
+        hideEdgesOnViewport: this.model.get('hide_edges_on_viewport'),
+        textureOnViewport: this.model.get('texture_on_viewport'),
+        motionBlur: this.model.get('motion_blur'),
+        motionBlurOpacity: this.model.get('motion_blur_opacity'),
+        wheelSensitivity: this.model.get('wheel_sensitivity'),
+        style: this.model.get('graph_style')
       });
+
+      this.cytoscape_obj.my_layout = null;
+
+      this.wireCytoscape();
+
+      this.wireModel();
+    });
+  }
+
+  wireModel() {
+    this.model.on('change:elements', this.elements_changed, this);
+
+    this.model.on('change:context_menus', this.context_menus_changed, this);
+
+    this.model.on('change:min_zoom', () => {
+        this.cytoscape_obj.minZoom(this.model.get('min_zoom'));
+      }, this);
+
+    this.model.on('change:max_zoom', () => {
+        this.cytoscape_obj.maxZoom(this.model.get('max_zoom'));
+      }, this);
+
+    this.model.on('change:zooming_enabled', () => {
+        this.cytoscape_obj.zoomingEnabled(this.model.get('zooming_enabled'));
+      }, this);
+
+    this.model.on('change:user_zooming_enabled', () => {
+        this.cytoscape_obj.userZoomingEnabled(this.model.get('user_zooming_enabled'));
+      }, this);
+
+    this.model.on('change:zoom', () => {
+        this.cytoscape_obj.zoom(this.model.get('zoom'));
+      }, this);
+
+    this.model.on('change:pan', () => {
+        this.cytoscape_obj.pan(this.model.get('pan'));
+      }, this);
+
+    this.model.on('change:panning_enabled', () => {
+        this.cytoscape_obj.selectionType(this.model.get('panning_enabled'));
+      }, this);
+
+    this.model.on('change:box_selection_enabled', () => {
+        this.cytoscape_obj.boxSelectionEnabled(this.model.get('box_selection_enabled'));
+      }, this);
+
+    this.model.on('change:selection_type', () => {
+        this.cytoscape_obj.selectionType(this.model.get('selection_type'));
+      }, this);
+
+    this.model.on('change:autolock', () => {
+        this.cytoscape_obj.autolock(this.model.get('autolock'));
+      }, this);
+
+    this.model.on('change:auto_ungrabify', () => {
+        this.cytoscape_obj.autoungrabify(this.model.get('auto_ungrabify'));
+      }, this);
+
+    this.model.on('change:auto_unselectify', () => {
+        this.cytoscape_obj.autounselectify(this.model.get('auto_unselectify'));
+      }, this);
+
+    this.model.on('change:graph_style', () => {
+        this.cytoscape_obj.style(this.model.get('graph_style'));
+      }, this);
+
+    this.model.on('change:graph_layout', this.graph_layout_changed, this);
+  }
+
+  wireCytoscape() {
+    this.cytoscape_obj.on('pan', (e: any) => {
+      this.model.set('pan', this.cytoscape_obj.pan());
+      this.model.save_changes();
+    });
+
+    this.cytoscape_obj.on('zoom', (e: any) => {
+      this.model.set('zoom', this.cytoscape_obj.zoom());
+      this.model.save_changes();
+    });
+
+    this.cytoscape_obj.on('add', async (e: any) => {
+      const view = await this.findElementView(e.target.data('_cid'));
+
+      if (view) {
+        view.model.set('removed', false);
+        view.model.save_changes();
+      }
+    });
+
+    this.cytoscape_obj.on('remove', async (e: any) => {
+      const view = await this.findElementView(e.target.data('_cid'));
+
+      if (view) {
+        view.model.set('removed', true);
+        view.model.save_changes();
+      }
+    });
+
+    this.cytoscape_obj.on('select', async (e: any) => {
+      const view = await this.findElementView(e.target.data('_cid'));
+
+      if (view) {
+        view.model.set('selected', true);
+        view.model.save_changes();
+      }
+    });
+
+    this.cytoscape_obj.on('unselect', async (e: any) => {
+      const view = await this.findElementView(e.target.data('_cid'));
+
+      if (view) {
+        view.model.set('selected', false);
+        view.model.save_changes();
+      }
+    });
+
+    this.cytoscape_obj.on('lock', async (e: any) => {
+      const view = await this.findElementView(e.target.data('_cid'));
+
+      if (view) {
+        view.model.set('locked', true);
+        view.model.save_changes();
+      }
+    });
+
+    this.cytoscape_obj.on('unlock', async (e: any) => {
+      const view = await this.findElementView(e.target.data('_cid'));
+
+      if (view) {
+        view.model.set('locked', false);
+        view.model.save_changes();
+      }
+    });
+
+    this.cytoscape_obj.on('grab', async (e: any) => {
+      const view = await this.findElementView(e.target.data('_cid'));
+
+      if (view) {
+        view.model.set('grabbed', true);
+        view.model.save_changes();
+      }
+    });
+
+    this.cytoscape_obj.on('free', async (e: any) => {
+      const view = await this.findElementView(e.target.data('_cid'));
+
+      if (view) {
+        view.model.set('grabbed', false);
+        view.model.save_changes();
+      }
+    });
+
+    this.cytoscape_obj.on('position', async (e: any) => {
+      const view = await this.findElementView(e.target.data('_cid'));
+
+      if (view) {
+        view.model.set('position', e.target.position());
+        view.model.save_changes();
+      }
+    });
+
+    this.cytoscape_obj.on('click', (e: any) => {
+      const element = e.target;
+      const ref = element.popperRef();
+      const dummyDomEle = document.createElement('div');
+
+      const tooltip_source = this.model.get('tooltip_source');
+      if (element.data()[tooltip_source]) {
+        const tip = Tippy(dummyDomEle, {
+          trigger: 'manual',
+          lazy: false,
+          arrow: true,
+          theme: 'material',
+          placement: 'bottom',
+          content: () => {
+            const content = document.createElement('div');
+            content.innerHTML = element
+              .data()
+              [tooltip_source].replace(/(?:\r\n|\r|\n)/g, '<br>');
+            return content;
+          },
+          onCreate: (instance: Instance | undefined) => {
+            if (instance && instance.popperInstance) {
+              instance.popperInstance.reference = ref;
+            }
+          },
+        });
+        tip.show();
+      }
+    });
+
+    this.cytoscape_obj.ready(() => {
+      this.context_menus_changed();
+      this.elements_changed();
+    });
+  }
+
+  processPhosphorMessage(msg: any): void {
+    super.processPhosphorMessage(msg);
+    if ((msg.type === 'resize' || msg.type === 'after-show') && this.cytoscape_obj) {
+      this.cytoscape_obj.resize();
+      this.cytoscape_obj.fit();
     }
   }
 

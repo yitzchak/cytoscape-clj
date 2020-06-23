@@ -9,6 +9,7 @@
     #:auto-ungrabify
     #:auto-unselectify
     #:box-selection-enabled
+    #:center
     #:classes
     #:commands
     #:content
@@ -22,6 +23,9 @@
     #:elements
     #:enabled
     #:fill-color
+    #:fit
+    #:enter-fullscreen
+    #:exit-fullscreen
     #:grabbable
     #:grabbed
     #:graph-layout
@@ -42,9 +46,11 @@
     #:motion-blur
     #:motion-blur-opacity
     #:on-menu-command-select
+    #:pan
     #:panning-enabled
     #:position
     #:removed
+    #:reset
     #:selectable
     #:selected
     #:selection-type
