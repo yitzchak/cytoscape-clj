@@ -8,14 +8,20 @@
     #:autolock
     #:auto-ungrabify
     #:auto-unselectify
+    #:bounding-box
     #:box-selection-enabled
+    #:breadth-first-layout
     #:center
+    #:circle-layout
     #:classes
+    #:cola-layout
     #:commands
+    #:concentric-layout
     #:content
     #:content-style
     #:context-menu
     #:context-menus
+    #:cose-layout
     #:cytoscape-widget
     #:data
     #:desktop-tap-threshold
@@ -24,12 +30,12 @@
     #:enabled
     #:fill-color
     #:fit
-    #:enter-fullscreen
-    #:exit-fullscreen
     #:grabbable
     #:grabbed
     #:graph-layout
+    #:graph-layouts
     #:graph-style
+    #:grid-layout
     #:group
     #:headless
     #:hide-edges-on-viewport
@@ -45,10 +51,13 @@
     #:min-zoom
     #:motion-blur
     #:motion-blur-opacity
+    #:null-layout
     #:on-menu-command-select
     #:pan
     #:panning-enabled
     #:position
+    #:preset-layout
+    #:random-layout
     #:removed
     #:reset
     #:selectable
@@ -59,6 +68,7 @@
     #:spotlight-padding
     #:style-enabled
     #:texture-on-viewport
+    #:toggle-fullscreen
     #:tooltip-source
     #:touch-tap-threshold
     #:user-panning-enabled

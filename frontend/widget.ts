@@ -16,184 +16,15 @@ import { MODULE_NAME, MODULE_VERSION } from './version';
 import '../css/widget.css';
 
 import cytoscape from 'cytoscape';
-// @ts-ignore
-import cola from 'cytoscape-cola';
+
 // @ts-ignore
 import popper from 'cytoscape-popper';
 // @ts-ignore
 import Tippy, { Instance } from 'tippy.js';
-// @ts-ignore
-import dagre from 'cytoscape-dagre';
-// @ts-ignore
-import cxtmenu from 'cytoscape-cxtmenu';
 
 import 'tippy.js/themes/material.css';
 
 cytoscape.use(popper);
-cytoscape.use(dagre);
-cytoscape.use(cola);
-cytoscape.use(cxtmenu);
-
-
-export class MenuCommandModel extends WidgetModel {
-  defaults() {
-    return {
-      ...super.defaults(),
-      fill_color: null,
-      content: 'a command name',
-      content_style: {},
-      enabled: true,
-    };
-  }
-
-  static model_name = 'MenuCommandModel';
-  static model_module = MODULE_NAME;
-  static model_module_version = MODULE_VERSION;
-  static view_name = 'MenuCommandView';
-  static view_module = MODULE_NAME;
-  static view_module_version = MODULE_VERSION;
-}
-
-export class MenuCommandView extends WidgetView {
-  constructor(params: any) {
-    super({
-      model: params.model,
-      options: params.options,
-    });
-  }
-
-  render () {
-    this.el.innerHTML = "Cytoscape menu command only usable in a Cytoscape context menu.";
-  }
-}
-
-
-export class ContextMenuModel extends WidgetModel {
-  defaults() {
-    return {
-      ...super.defaults(),
-      menu_radius: 100,
-      selector: 'node',
-      commands: [],
-      fill_color: 'rgba(0, 0, 0, 0.75)',
-      active_fill_color: 'rgba(1, 105, 217, 0.75)',
-      active_padding: 20,
-      indicator_size: 24,
-      separator_width: 3,
-      spotlight_padding: 4,
-      min_spotlight_radius: 24,
-      max_spotlight_radius: 38,
-      open_menu_events: 'cxttapstart taphold',
-      item_color: 'white',
-      item_text_shadow_color: 'transparent',
-      z_index: 9999,
-      at_mouse: false,
-    };
-  }
-
-  static serializers: ISerializers = {
-    commands: { deserialize: widgets.unpack_models },
-    ...WidgetModel.serializers,
-  };
-
-  static model_name = 'ContextMenuModel';
-  static model_module = MODULE_NAME;
-  static model_module_version = MODULE_VERSION;
-  static view_name = 'ContextMenuView';
-  static view_module = MODULE_NAME;
-  static view_module_version = MODULE_VERSION;
-}
-
-
-export class ContextMenuView extends WidgetView {
-  cytoscape_obj: any;
-  is_rendered = false;
-  menu: any = null;
-
-  constructor(params: any) {
-    super({
-      model: params.model,
-      options: params.options,
-    });
-
-    this.cytoscape_obj = this.options.cytoscape_obj;
-
-    this.on('remove', () => {
-      if (this.menu) {
-        this.menu.destroy();
-        this.menu = null;
-        this.is_rendered = false;
-      }
-    });
-  }
-
-  async getCommands() {
-    let commands: any = this.model.get('commands');
-
-    return commands
-      ? commands.map((command: any) => {
-          return {
-            fillColor: command.get('fill_color'),
-            content: command.get('content'),
-            contentStyle: command.get('content_style'),
-            enabled: command.get('enabled'),
-            select: (ele: any) => command.send({ event: 'select', id: ele.data('id') }),
-          };
-        })
-      : [];
-  }
-
-  createMenu() {
-    if (this.menu) this.menu.destroy();
-
-    this.menu = this.cytoscape_obj.cxtmenu({
-      menuRadius: this.model.get('menu_radius'),
-      selector: this.model.get('selector'),
-      commands: this.getCommands.bind(this),
-      fillColor: this.model.get('fill_color'),
-      activeFillColor: this.model.get('active_fill_color'),
-      activePadding: this.model.get('active_padding'),
-      indicatorSize: this.model.get('indicator_size'),
-      separatorWidth: this.model.get('separator_width'),
-      spotlightPadding: this.model.get('spotlight_padding'),
-      minSpotlightRadius: this.model.get('min_spotlight_radius'),
-      maxSpotlightRadius: this.model.get('max_spotlight_radius'),
-      openMenuEvents: this.model.get('open_menu_events'),
-      itemColor: this.model.get('item_color'),
-      itemTextShadowColor: this.model.get('item_text_shadow_color'),
-      zIndex: this.model.get('z_index'),
-      atMouse: this.model.get('at_mouse'),
-    });
-  }
-
-  render() {
-    if (!this.cytoscape_obj) {
-      this.el.innerHTML = "Cytoscape context menu only usable in a Cytoscape widget.";
-    } else if (!this.is_rendered) {
-      this.is_rendered = true;
-
-      this.createMenu();
-
-      this.model.on_some_change([
-        'menu_radius',
-        'selector',
-        'fill_color',
-        'active_fill_color',
-        'active_padding',
-        'indicator_size',
-        'separator_width',
-        'spotlight_padding',
-        'min_spotlight_radius',
-        'max_spotlight_radius',
-        'open_menu_events',
-        'item_color',
-        'item_text_shadow_color',
-        'z_index',
-        'at_mouse'
-      ], this.createMenu.bind(this), this);
-    }
-  }
-}
 
 
 export class ElementModel extends WidgetModel {
@@ -256,7 +87,7 @@ export class CytoscapeModel extends DOMWidgetModel {
 
       elements: [],
       graph_style: [],
-      graph_layout: {},
+      graph_layouts: [],
 
       zoom: 1,
       pan: { x: 0, y: 0 },
@@ -293,6 +124,7 @@ export class CytoscapeModel extends DOMWidgetModel {
   static serializers: ISerializers = {
     context_menus: { deserialize: widgets.unpack_models },
     elements: { deserialize: widgets.unpack_models },
+    graph_layouts: { deserialize: widgets.unpack_models },
     ...DOMWidgetModel.serializers,
   };
 
@@ -357,7 +189,7 @@ export class ElementView extends WidgetView {
     } else {
       this.getElements().restore();
     }
-    if (this.cytoscape_obj.my_layout) this.cytoscape_obj.my_layout.run();
+    if (this.cytoscape_obj) this.cytoscape_obj.graph_layouts_changed();
   }
 
   locked_changed() {
@@ -381,7 +213,7 @@ export class ElementView extends WidgetView {
   }
 
   data_changed() {
-    this.getElements().data(Object.assign({ _cid: this.cid }, this.model.get('data')));
+    this.getElements().data({ _cid: this.cid, ...this.model.get('data') });
   }
 
   position_changed() {
@@ -396,7 +228,7 @@ export class ElementView extends WidgetView {
 
       let ele = this.cytoscape_obj.add({
         group: this.model.get('group'),
-        data: Object.assign({ _cid: this.cid }, this.model.get('data')),
+        data: { _cid: this.cid, ...this.model.get('data') },
         classes: this.model.get('classes'),
         selectable: this.model.get('selectable'),
         selected: this.model.get('selected'),
@@ -412,18 +244,24 @@ export class CytoscapeView extends DOMWidgetView {
   is_rendered = false;
   elementViews: any;
   contextMenuViews: any;
+  layoutViews: any;
   cy_container: any;
 
   initialize(parameters: any): void {
     super.initialize(parameters);
     this.elementViews = new widgets.ViewList(
-      this.createElementView,
-      this.removeElementView,
+      this.create_cy_child_view,
+      this.remove_cy_child_view,
       this
     );
     this.contextMenuViews = new widgets.ViewList(
-      this.createContextMenuView,
-      this.removeContextMenuView,
+      this.create_cy_child_view,
+      this.remove_cy_child_view,
+      this
+    );
+    this.layoutViews = new widgets.ViewList(
+      this.create_cy_child_view,
+      this.remove_cy_child_view,
       this
     );
     this.model.on('msg:custom', this.handle_custom_message.bind(this));
@@ -502,8 +340,6 @@ export class CytoscapeView extends DOMWidgetView {
         style: this.model.get('graph_style')
       });
 
-      this.cytoscape_obj.my_layout = null;
-
       this.wireCytoscape();
 
       this.wireModel();
@@ -567,7 +403,7 @@ export class CytoscapeView extends DOMWidgetView {
         this.cytoscape_obj.style(this.model.get('graph_style'));
       }, this);
 
-    this.model.on('change:graph_layout', this.graph_layout_changed, this);
+    this.model.on('change:graph_layouts', this.graph_layouts_changed, this);
   }
 
   wireCytoscape() {
@@ -709,7 +545,7 @@ export class CytoscapeView extends DOMWidgetView {
   elements_changed() {
     this.elementViews.update(this.model.get('elements'))
       .then((views: Array<any>) => Promise.all(views.map((view: any) => view.render())))
-      .then(() => this.graph_layout_changed());
+      .then(() => this.graph_layouts_changed());
   }
 
   context_menus_changed() {
@@ -717,29 +553,18 @@ export class CytoscapeView extends DOMWidgetView {
       .then((views: Array<any>) => Promise.all(views.map((view: any) => view.render())));
   }
 
-  graph_layout_changed() {
-    let layout = this.model.get('graph_layout');
-    this.cytoscape_obj.my_layout = layout ? this.cytoscape_obj.layout(layout) : null;
-    if (this.cytoscape_obj.my_layout) this.cytoscape_obj.my_layout.run();
+  graph_layouts_changed() {
+    this.layoutViews.update(this.model.get('graph_layouts'))
+      .then((views: Array<any>) => Promise.all(views.map((view: any) => view.render())))
   }
 
-  createElementView(model: any, index: any) {
+  create_cy_child_view(model: any, index: any) {
     return this.create_child_view(model, {
       cytoscape_obj: this.cytoscape_obj
     });
   }
 
-  removeElementView(view: any) {
-    view.remove();
-  }
-
-  createContextMenuView(model: any, index: any) {
-    return this.create_child_view(model, {
-      cytoscape_obj: this.cytoscape_obj
-    });
-  }
-
-  removeContextMenuView(view: any) {
+  remove_cy_child_view(view: any) {
     view.remove();
   }
 }

@@ -238,12 +238,12 @@
        reduces the sensitivity (zooms slower), and a value greater than
        1 increases the sensitivity (zooms faster)."
      :trait :float)
-   (graph-layout
-     :accessor graph-layout
-     :initarg :graph-layout
-     :initform '(("name" . "cola"))
-     :documentation "Layout algorithm"
-     :trait :dict)
+   (graph-layouts
+     :accessor graph-layouts
+     :initarg :graph-layouts
+     :initform nil
+     :documentation "Layout algorithms"
+     :trait :widget-list)
    (graph-style
      :accessor graph-style
      :initarg :graph-style

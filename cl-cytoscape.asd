@@ -13,4 +13,5 @@
         ((:file "packages")
          (:file "version")
          (:file "context-menu")
+         (:file "graph-layout")
          (:file "cytoscape")))))
