@@ -306,6 +306,7 @@
 
 
 (defun fit-elements (instance &key elements (padding 0))
+  (declare (ignore elements))
   (jupyter-widgets:send-custom instance
                                (jupyter:json-new-obj
                                  ("do" "fit")
