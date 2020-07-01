@@ -1,5 +1,5 @@
 (in-package :cytoscape)
 
-(defparameter +module-name+ "cl-cytoscape")
-(defparameter +module-version+ "^0.1.96")
+(defparameter +module-name+ "cytoscape-clj")
+(defparameter +module-version+ "^0.2.0")
 

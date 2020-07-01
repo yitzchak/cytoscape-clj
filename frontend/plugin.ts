@@ -6,7 +6,7 @@ import { IJupyterWidgetRegistry } from '@jupyter-widgets/base';
 
 import { MODULE_NAME, MODULE_VERSION } from './version';
 
-const EXTENSION_ID = 'cl-cytoscape:plugin';
+const EXTENSION_ID = 'cytoscape-clj:plugin';
 
 const cytoscapePlugin: IPlugin<Application<Widget>, void> = {
   id: EXTENSION_ID,
@@ -30,9 +30,9 @@ function activateWidgetExtension(
 
     exports: async () => {
       return {
-        ...await import(/* webpackChunkName: "cl-cytoscape" */ './widget'),
-        ...await import(/* webpackChunkName: "cl-cytoscape" */ './graph-layout'),
-        ...await import(/* webpackChunkName: "cl-cytoscape" */ './context-menu')
+        ...await import(/* webpackChunkName: "cytoscape-clj" */ './widget'),
+        ...await import(/* webpackChunkName: "cytoscape-clj" */ './graph-layout'),
+        ...await import(/* webpackChunkName: "cytoscape-clj" */ './context-menu')
       }
     }
   });

@@ -1,7 +1,7 @@
 {
-  "name": "cl-cytoscape",
-  "version": "0.1.148",
-  "description": "A Cytoscape Jupyter Widget for Common LIsp",
+  "name": "cytoscape-clj",
+  "version": "0.2.0",
+  "description": "A Cytoscape Widget for Common Lisp Jupyter",
   "keywords": [
     "cytoscape",
     "jupyter",
@@ -14,9 +14,9 @@
     "css/*.css",
     "LICENSE.md"
   ],
-  "homepage": "https://github.com/yitzchak/cl-cytoscape",
+  "homepage": "https://github.com/yitzchak/cytoscape-clj",
   "bugs": {
-    "url": "https://github.com/yitzchak/cl-cytoscape/issues"
+    "url": "https://github.com/yitzchak/cytoscape-clj/issues"
   },
   "license": "MIT",
   "author": {
@@ -27,7 +27,7 @@
   "types": "./lib/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yitzchak/cl-cytoscape"
+    "url": "https://github.com/yitzchak/cytoscape-clj"
   },
   "scripts": {
     "build": "tsc",
