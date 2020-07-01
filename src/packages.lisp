@@ -23,6 +23,7 @@
     #:context-menus
     #:cose-layout
     #:cytoscape-widget
+    #:dagre-layout
     #:data
     #:desktop-tap-threshold
     #:element
@@ -30,6 +31,7 @@
     #:enabled
     #:fill-color
     #:fit
+    #:fit-elements
     #:grabbable
     #:grabbed
     #:graph-layout
@@ -42,6 +44,7 @@
     #:indicator-size
     #:item-color
     #:item-text-shadow-color
+    #:layout
     #:locked
     #:max-spotlight-radius
     #:max-zoom
@@ -52,6 +55,7 @@
     #:motion-blur
     #:motion-blur-opacity
     #:null-layout
+    #:on-layout-stop
     #:on-menu-command-select
     #:pan
     #:panning-enabled

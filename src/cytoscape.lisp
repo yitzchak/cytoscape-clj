@@ -305,17 +305,23 @@
                                  ("do" "center"))))
 
 
-(defun fit (instance &key elements (padding 0))
+(defun fit-elements (instance &key elements (padding 0))
   (jupyter-widgets:send-custom instance
                                (jupyter:json-new-obj
                                  ("do" "fit")
                                  ("padding" padding))))
 
 
-(defun toggle-fullscreen (instance &key elements (padding 0))
+(defun toggle-fullscreen (instance)
   (jupyter-widgets:send-custom instance
                                (jupyter:json-new-obj
                                  ("do" "toggle_fullscreen"))))
+
+(defun layout (instance)
+  (jupyter-widgets:send-custom instance
+                               (jupyter:json-new-obj
+                                 ("do" "layout"))))
+
 
 (defgeneric add-graph (instance value)
   (:documentation "Add a graph to a cytoscape widget based on value type."))

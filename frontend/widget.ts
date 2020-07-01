@@ -31,12 +31,13 @@ export class ElementModel extends WidgetModel {
   defaults() {
     return {
       ...super.defaults(),
-      _model_name: ElementModel.model_name,
-      _model_module: ElementModel.model_module,
-      _model_module_version: ElementModel.model_module_version,
-      _view_name: ElementModel.view_name,
-      _view_module: ElementModel.view_module,
-      _view_module_version: ElementModel.view_module_version,
+
+      _model_name: 'ElementModel',
+      _model_module: MODULE_NAME,
+      _model_module_version: MODULE_VERSION,
+      _view_name: 'ElementView',
+      _view_module: MODULE_NAME,
+      _view_module_version: MODULE_VERSION,
 
       group: 'nodes',
       removed: false,
@@ -50,40 +51,31 @@ export class ElementModel extends WidgetModel {
       position: {},
     };
   }
-
-  static model_name = 'ElementModel';
-  static model_module = MODULE_NAME;
-  static model_module_version = MODULE_VERSION;
-  static view_name = 'ElementView';
-  static view_module = MODULE_NAME;
-  static view_module_version = MODULE_VERSION;
 }
 
 export class CytoscapeStyleModel extends StyleModel {
   defaults() {
     return {
       ...super.defaults(),
-      _model_name: CytoscapeStyleModel.model_name,
-      _model_module: CytoscapeStyleModel.model_module,
-      _model_module_version: CytoscapeStyleModel.model_module_version
+
+      _model_name: 'CytoscapeStyleModel',
+      _model_module: MODULE_NAME,
+      _model_module_version: MODULE_VERSION,
     };
   }
-
-  static model_name = 'CytoscapeStyleModel';
-  static model_module = MODULE_NAME;
-  static model_module_version = MODULE_VERSION;
 }
 
 export class CytoscapeModel extends DOMWidgetModel {
   defaults() {
     return {
       ...super.defaults(),
-      _model_name: CytoscapeModel.model_name,
-      _model_module: CytoscapeModel.model_module,
-      _model_module_version: CytoscapeModel.model_module_version,
-      _view_name: CytoscapeModel.view_name,
-      _view_module: CytoscapeModel.view_module,
-      _view_module_version: CytoscapeModel.view_module_version,
+
+      _model_name: 'CytoscapeModel',
+      _model_module: MODULE_NAME,
+      _model_module_version: MODULE_VERSION,
+      _view_name: 'CytoscapeView',
+      _view_module: MODULE_NAME,
+      _view_module_version: MODULE_VERSION,
 
       elements: [],
       graph_style: [],
@@ -127,13 +119,6 @@ export class CytoscapeModel extends DOMWidgetModel {
     graph_layouts: { deserialize: widgets.unpack_models },
     ...DOMWidgetModel.serializers,
   };
-
-  static model_name = 'CytoscapeModel';
-  static model_module = MODULE_NAME;
-  static model_module_version = MODULE_VERSION;
-  static view_name = 'CytoscapeView';
-  static view_module = MODULE_NAME;
-  static view_module_version = MODULE_VERSION;
 }
 
 export class ElementView extends WidgetView {
@@ -246,6 +231,7 @@ export class CytoscapeView extends DOMWidgetView {
   contextMenuViews: any;
   layoutViews: any;
   cy_container: any;
+  in_elements_changing = false;
 
   initialize(parameters: any): void {
     super.initialize(parameters);
@@ -287,6 +273,9 @@ export class CytoscapeView extends DOMWidgetView {
             break;
           case 'center':
             this.cytoscape_obj.center();
+            break;
+          case 'layout':
+            this.graph_layouts_changed();
             break;
           case 'toggle_fullscreen':
             if (document.fullscreenElement) {
@@ -543,9 +532,14 @@ export class CytoscapeView extends DOMWidgetView {
   }
 
   elements_changed() {
+    this.in_elements_changing = true;
+
     this.elementViews.update(this.model.get('elements'))
       .then((views: Array<any>) => Promise.all(views.map((view: any) => view.render())))
-      .then(() => this.graph_layouts_changed());
+      .then(() => {
+        this.in_elements_changing = false;
+        this.graph_layouts_changed();
+      });
   }
 
   context_menus_changed() {
@@ -554,8 +548,16 @@ export class CytoscapeView extends DOMWidgetView {
   }
 
   graph_layouts_changed() {
-    this.layoutViews.update(this.model.get('graph_layouts'))
-      .then((views: Array<any>) => Promise.all(views.map((view: any) => view.render())))
+    if (!this.in_elements_changing) {
+      this.layoutViews.update(this.model.get('graph_layouts'))
+        .then((views: Array<any>) => {
+          views.reduce(
+            async (previousPromise, view) => {
+              await previousPromise;
+              return view.render();
+            }, Promise.resolve());
+          });
+    }
   }
 
   create_cy_child_view(model: any, index: any) {

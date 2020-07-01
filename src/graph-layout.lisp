@@ -7,7 +7,11 @@
      :initarg :selector
      :initform "*"
      :documentation "Elements that the layout applies to."
-     :trait :unicode))
+     :trait :unicode)
+   (on-layout-stop
+     :initarg :on-layout-stop
+     :initform nil
+     :accessor %on-layout-stop))
   (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Graph layout algorithm.")
   (:default-initargs
@@ -20,14 +24,39 @@
 
 (jupyter-widgets:register-widget graph-layout)
 
+(defun on-layout-stop (widget handler)
+  (push handler (%on-layout-stop widget)))
+
+(defmethod jupyter-widgets:on-custom-message ((w graph-layout) content buffers)
+  (declare (ignore buffers))
+  (if (equal (jupyter:json-getf content "event") "layout_stop")
+    (dolist (handler (%on-layout-stop w))
+            ()
+      (funcall handler w))
+    (call-next-method)))
+
 
 (defclass bounding-box-slot ()
   ((bounding-box
      :accessor bounding-box
      :initarg :bounding-box
-     :initform nil
+     :initform :null
      :documentation "constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }"
      :trait :dict))
+  (:metaclass jupyter-widgets:trait-metaclass))
+
+
+(defclass common-slots ()
+  ((fit
+     :accessor fit
+     :initarg :fit
+     :initform t
+     :trait :bool)
+   (padding
+     :accessor padding
+     :initarg :padding
+     :initform 30
+     :trait :int))
   (:metaclass jupyter-widgets:trait-metaclass))
 
 
@@ -42,7 +71,7 @@
 (jupyter-widgets:register-widget null-layout)
 
 
-(defclass random-layout (graph-layout bounding-box-slot)
+(defclass random-layout (graph-layout bounding-box-slot common-slots)
   ()
   (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Random graph layout algorithm.")
@@ -53,7 +82,7 @@
 (jupyter-widgets:register-widget random-layout)
 
 
-(defclass preset-layout (graph-layout)
+(defclass preset-layout (graph-layout common-slots)
   ()
   (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Preset graph layout algorithm.")
@@ -64,7 +93,7 @@
 (jupyter-widgets:register-widget preset-layout)
 
 
-(defclass grid-layout (graph-layout bounding-box-slot)
+(defclass grid-layout (graph-layout bounding-box-slot common-slots)
   ()
   (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Grid graph layout algorithm.")
@@ -75,7 +104,7 @@
 (jupyter-widgets:register-widget grid-layout)
 
 
-(defclass circle-layout (graph-layout bounding-box-slot)
+(defclass circle-layout (graph-layout bounding-box-slot common-slots)
   ()
   (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Circle graph layout algorithm.")
@@ -86,7 +115,7 @@
 (jupyter-widgets:register-widget circle-layout)
 
 
-(defclass concentric-layout (graph-layout bounding-box-slot)
+(defclass concentric-layout (graph-layout bounding-box-slot common-slots)
   ()
   (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Concentric graph layout algorithm.")
@@ -97,7 +126,7 @@
 (jupyter-widgets:register-widget concentric-layout)
 
 
-(defclass breadth-first-layout (graph-layout bounding-box-slot)
+(defclass breadth-first-layout (graph-layout bounding-box-slot common-slots)
   ()
   (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Breadth first graph layout algorithm.")
@@ -108,7 +137,7 @@
 (jupyter-widgets:register-widget breadth-first-layout)
 
 
-(defclass cose-layout (graph-layout bounding-box-slot)
+(defclass cose-layout (graph-layout bounding-box-slot common-slots)
   ()
   (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Cose graph layout algorithm.")
@@ -119,7 +148,7 @@
 (jupyter-widgets:register-widget cose-layout)
 
 
-(defclass cola-layout (graph-layout bounding-box-slot)
+(defclass cola-layout (graph-layout bounding-box-slot common-slots)
   ()
   (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Cola graph layout algorithm.")
@@ -128,4 +157,16 @@
     :%view-name "ColaLayoutView"))
 
 (jupyter-widgets:register-widget cola-layout)
+
+
+(defclass dagre-layout (graph-layout bounding-box-slot common-slots)
+  ()
+  (:metaclass jupyter-widgets:trait-metaclass)
+  (:documentation "Dagre graph layout algorithm.")
+  (:default-initargs
+    :%model-name "DagreLayoutModel"
+    :%view-name "DagreLayoutView"))
+
+(jupyter-widgets:register-widget Dagre-layout)
+
 

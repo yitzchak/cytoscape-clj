@@ -20,19 +20,19 @@ export class MenuCommandModel extends WidgetModel {
   defaults() {
     return {
       ...super.defaults(),
+      _model_name: 'MenuCommandModel',
+      _model_module: MODULE_NAME,
+      _model_module_version: MODULE_VERSION,
+      _view_name: 'MenuCommandView',
+      _view_module: MODULE_NAME,
+      _view_module_version: MODULE_VERSION,
+
       fill_color: null,
       content: 'a command name',
       content_style: {},
       enabled: true,
     };
   }
-
-  static model_name = 'MenuCommandModel';
-  static model_module = MODULE_NAME;
-  static model_module_version = MODULE_VERSION;
-  static view_name = 'MenuCommandView';
-  static view_module = MODULE_NAME;
-  static view_module_version = MODULE_VERSION;
 }
 
 export class MenuCommandView extends WidgetView {
@@ -53,6 +53,13 @@ export class ContextMenuModel extends WidgetModel {
   defaults() {
     return {
       ...super.defaults(),
+      _model_name: 'ContextMenuModel',
+      _model_module: MODULE_NAME,
+      _model_module_version: MODULE_VERSION,
+      _view_name: 'ContextMenuView',
+      _view_module: MODULE_NAME,
+      _view_module_version: MODULE_VERSION,
+
       menu_radius: 100,
       selector: 'node',
       commands: [],
@@ -76,13 +83,6 @@ export class ContextMenuModel extends WidgetModel {
     commands: { deserialize: widgets.unpack_models },
     ...WidgetModel.serializers,
   };
-
-  static model_name = 'ContextMenuModel';
-  static model_module = MODULE_NAME;
-  static model_module_version = MODULE_VERSION;
-  static view_name = 'ContextMenuView';
-  static view_module = MODULE_NAME;
-  static view_module_version = MODULE_VERSION;
 }
 
 
