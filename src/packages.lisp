@@ -4,81 +4,138 @@
     #:active-fill-color
     #:active-padding
     #:add-graph
+    #:alignment
+    #:all-const-iter
+    #:animate
+    #:animation-duration
+    #:animation-easing
     #:at-mouse
     #:autolock
     #:auto-ungrabify
     #:auto-unselectify
+    #:avoid-overlap
+    #:avoid-overlap-padding
     #:bounding-box
     #:box-selection-enabled
     #:breadth-first-layout
     #:center
+    #:circle
     #:circle-layout
     #:classes
+    #:clockwise
     #:cola-layout
+    #:cols
     #:commands
+    #:component-spacing
     #:concentric-layout
+    #:condense
     #:content
     #:content-style
     #:context-menu
     #:context-menus
+    #:convergence-threshold
+    #:cooling-factor
     #:cose-layout
     #:cytoscape-widget
     #:dagre-layout
     #:data
     #:desktop-tap-threshold
+    #:directed
+    #:edge-elasticity
+    #:edge-jaccard-length
+    #:edge-length
+    #:edge-sep
+    #:edge-sym-diff-length
+    #:edge-weight
     #:element
     #:elements
     #:enabled
+    #:equidistant
     #:fill-color
     #:fit
     #:fit-elements
+    #:flow
+    #:gap-inequalities
     #:grabbable
     #:grabbed
     #:graph-layout
     #:graph-layouts
     #:graph-style
+    #:gravity
+    #:grid
     #:grid-layout
     #:group
+    #:handle-disconnected
     #:headless
     #:hide-edges-on-viewport
+    #:ideal-edge-length
     #:indicator-size
+    #:initial-temp
     #:item-color
     #:item-text-shadow-color
     #:layout
     #:locked
+    #:maximal
+    #:max-simulation-time
     #:max-spotlight-radius
     #:max-zoom
     #:menu-command
     #:menu-radius
+    #:min-length
+    #:min-node-spacing
     #:min-spotlight-radius
+    #:min-temp
     #:min-zoom
     #:motion-blur
     #:motion-blur-opacity
+    #:nesting-factor
+    #:node-dimensions-include-labels
+    #:node-overlap
+    #:node-repulsion
+    #:node-sep
     #:null-layout
+    #:num-iter
+    #:%on-layout-stop
     #:on-layout-stop
     #:on-menu-command-select
+    #:padding
     #:pan
     #:panning-enabled
     #:position
     #:preset-layout
+    #:radius
+    #:randomize
     #:random-layout
+    #:rank-dir
+    #:ranker
+    #:rank-sep
+    #:refresh
     #:removed
     #:reset
+    #:roots
+    #:rows
     #:selectable
     #:selected
     #:selection-type
     #:selector
     #:separator-width
+    #:spacing-factor
     #:spotlight-padding
+    #:start-angle
     #:style-enabled
+    #:sweep
     #:texture-on-viewport
     #:toggle-fullscreen
     #:tooltip-source
     #:touch-tap-threshold
+    #:unconst-iter
+    #:ungrabify-while-simulating
+    #:user-const-iter
     #:user-panning-enabled
     #:user-zooming-enabled
     #:wheel-sensitivity
     #:z-index
+    #:zoom
     #:zoom
     #:zooming-enabled))
 

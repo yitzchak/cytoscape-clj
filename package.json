@@ -1,6 +1,6 @@
 {
   "name": "cytoscape-clj",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "A Cytoscape Widget for Common Lisp Jupyter",
   "keywords": [
     "cytoscape",

@@ -303,7 +303,7 @@
    (roots
      :accessor roots
      :initarg :roots
-     :initform nil
+     :initform :null
      :documentation "The roots of the trees"
      :trait :list))
   (:metaclass jupyter-widgets:trait-metaclass)

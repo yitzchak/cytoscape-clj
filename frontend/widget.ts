@@ -531,15 +531,26 @@ export class CytoscapeView extends DOMWidgetView {
     }
   }
 
-  elements_changed() {
+  async elements_changed() {
     this.in_elements_changing = true;
 
-    this.elementViews.update(this.model.get('elements'))
-      .then((views: Array<any>) => Promise.all(views.map((view: any) => view.render())))
-      .then(() => {
-        this.in_elements_changing = false;
-        this.graph_layouts_changed();
-      });
+    let views = await this.elementViews.update(this.model.get('elements'));
+
+    for (let view of views) {
+      if (view.model.get('group') === 'nodes') {
+        await view.render();
+      }
+    }
+
+    for (let view of views) {
+      if (view.model.get('group') === 'edges') {
+        await view.render();
+      }
+    }
+
+    this.in_elements_changing = false;
+
+    await this.graph_layouts_changed();
   }
 
   context_menus_changed() {
@@ -547,16 +558,13 @@ export class CytoscapeView extends DOMWidgetView {
       .then((views: Array<any>) => Promise.all(views.map((view: any) => view.render())));
   }
 
-  graph_layouts_changed() {
+  async graph_layouts_changed() {
     if (!this.in_elements_changing) {
-      this.layoutViews.update(this.model.get('graph_layouts'))
-        .then((views: Array<any>) => {
-          views.reduce(
-            async (previousPromise, view) => {
-              await previousPromise;
-              return view.render();
-            }, Promise.resolve());
-          });
+      let views = await this.layoutViews.update(this.model.get('graph_layouts'));
+
+      for (let view of views) {
+        await view.render();
+      }
     }
   }
 
