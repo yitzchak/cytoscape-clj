@@ -1,6 +1,6 @@
 (asdf:defsystem #:cytoscape-clj
-  :description "A cytoscape widgetfor Common Lisp Jupyter."
-  :version "0.2.3"
+  :description "A cytoscape widget for Common Lisp Jupyter."
+  :version "0.2.7"
   :author "Tarn W. Burton"
   :license "MIT"
   :depends-on

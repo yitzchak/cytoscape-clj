@@ -51,6 +51,7 @@
     #:elements
     #:enabled
     #:equidistant
+    #:fcose-layout
     #:fill-color
     #:fit
     #:fit-elements
@@ -62,6 +63,9 @@
     #:graph-layouts
     #:graph-style
     #:gravity
+    #:gravity-compound
+    #:gravity-range
+    #:gravity-range-compound
     #:grid
     #:grid-layout
     #:group
@@ -70,6 +74,7 @@
     #:hide-edges-on-viewport
     #:ideal-edge-length
     #:indicator-size
+    #:initial-energy-on-incremental
     #:initial-temp
     #:item-color
     #:item-text-shadow-color
@@ -93,16 +98,20 @@
     #:node-overlap
     #:node-repulsion
     #:node-sep
+    #:node-separation
     #:null-layout
     #:num-iter
     #:%on-layout-stop
     #:on-layout-stop
     #:on-menu-command-select
+    #:pack-components
     #:padding
     #:pan
     #:panning-enabled
+    #:pi-tol
     #:position
     #:preset-layout
+    #:quality
     #:radius
     #:randomize
     #:random-layout
@@ -114,6 +123,8 @@
     #:reset
     #:roots
     #:rows
+    #:sample-size
+    #:sampling-type
     #:selectable
     #:selected
     #:selection-type
@@ -125,11 +136,15 @@
     #:style-enabled
     #:sweep
     #:texture-on-viewport
+    #:tile
+    #:tile-padding-horizontal
+    #:tile-padding-vertical
     #:toggle-fullscreen
     #:tooltip-source
     #:touch-tap-threshold
     #:unconst-iter
     #:ungrabify-while-simulating
+    #:uniform-node-dimensions
     #:user-const-iter
     #:user-panning-enabled
     #:user-zooming-enabled

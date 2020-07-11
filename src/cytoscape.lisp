@@ -324,10 +324,11 @@
                                  ("do" "layout"))))
 
 
-(defgeneric add-graph (instance value)
+(defgeneric add-graph (instance value &rest args)
   (:documentation "Add a graph to a cytoscape widget based on value type."))
 
-(defmethod add-graph (instance (value list))
+(defmethod add-graph (instance (value list) &rest args)
+  (declare (ignore args))
   (dolist (group '("nodes" "edges"))
     (setf (elements instance)
           (append (elements instance)
@@ -335,3 +336,18 @@
                             (make-instance 'element :group group :data (cdr (jsown:val j "data"))))
                           (jsown:val value group))))))
 
+; (defmethod add-graph (instance (value array))
+;   (unless (and (= 2 (array-rank value))
+;                (= (array-dimension value 0) (array-dimension value 1)))
+;     (error "Adjacency matrix must be a square matrix."))
+;   (prog (elements (source 0) target)
+;     (push (make-instance 'cytoscape:element :group "nodes"
+;                          :data (list (cons "id" (write-to-string source))))
+;           elements)
+;     (setq target source)
+;     (push (make-instance 'cytoscape:element :group "edges"
+;                          :data (list (cons "source" (write-to-string source))
+
+;           elements)
+
+      

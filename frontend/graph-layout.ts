@@ -15,6 +15,10 @@ cytoscape.use(cola);
 import dagre from 'cytoscape-dagre';
 cytoscape.use(dagre);
 
+// @ts-ignore
+import fcose from 'cytoscape-fcose';
+cytoscape.use(fcose);
+
 
 export class GraphLayoutModel extends WidgetModel {
   defaults() {
@@ -657,6 +661,97 @@ export class DagreLayoutView extends GraphLayoutView {
           ranker: this.model.get('ranker'),
           rankSep: this.model.get('rank_sep'),
           spacingFactor: this.model.get('spacing_factor'),
+          stop: () => {
+            layout.destroy();
+            this.send({"type": "layout_stop"});
+            resolve();
+          }
+        });
+
+        layout.run();
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+}
+
+
+export class FCoSE_LayoutModel extends GraphLayoutModel {
+  defaults() {
+    return {
+      ...super.defaults(),
+
+      _model_name: 'FCoSE_LayoutModel',
+      _view_name: 'FCoSE_LayoutView',
+
+      animate: true,
+      animation_duration: 1000,
+      animation_easing: undefined,
+      edge_elasticity: 0.45,
+      fit: true,
+      gravity: 0.25,
+      gravity_compound: 1.0,
+      gravity_range: 3.8,
+      gravity_range_compound: 1.5,
+      ideal_edge_length: 50,
+      initial_energy_on_incremental: 0.3,
+      nesting_factor: 0.1,
+      node_dimensions_include_labels: false,
+      node_repulsion: 4500,
+      node_separation: 75,
+      num_iter: 2500,
+      pack_components: true,
+      padding: 30,
+      pi_tol: 0.0000001,
+      quality: "default",
+      randomize: true,
+      sample_size: 25,
+      sampling_type: true,
+      tile: true,
+      tiling_padding_horizontal: 10,
+      tiling_padding_vertical: 10,
+      uniform_node_dimensions: false
+    };
+  }
+}
+
+
+export class FCoSE_LayoutView extends GraphLayoutView {
+  layout(ele: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      try {
+        let layout = ele.layout({
+          name: 'fcose',
+
+          animate: this.model.get('animate'),
+          animationDuration: this.model.get('animation_duration'),
+          animationEasing: this.model.get('animation_easing') || undefined,
+          edgeElasticity: this.model.get('edge_elasticity'),
+          fit: this.model.get('fit'),
+          gravityCompound: this.model.get('gravity_range_compound'),
+          gravityRangeCompound: this.model.get('gravity_range_compound'),
+          gravityRange: this.model.get('gravity_range'),
+          gravity: this.model.get('gravity'),
+          idealEdgeLength: this.model.get('ideal_edge_length'),
+          initialEnergyOnIncremental: this.model.get('initial_energy_on_incremental'),
+          nestingFactor: this.model.get('nesting_factor'),
+          nodeDimensionsIncludeLabels: this.model.get('node_dimensions_include_labels'),
+          nodeRepulsion: this.model.get('node_repulsion'),
+          nodeSeparation: this.model.get('node_separation'),
+          numIter: this.model.get('num_iter'),
+          packComponents: this.model.get('pack_components'),
+          padding: this.model.get('padding'),
+          piTol: this.model.get('pi_tol'),
+          quality: this.model.get('quality'),
+          randomize: this.model.get('randomize'),
+          sampleSize: this.model.get('sample_size'),
+          samplingType: this.model.get('sampling_type'),
+          tile: this.model.get('tile'),
+          tilingPaddingHorizontal: this.model.get('tiling_padding_horizontal'),
+          tilingPaddingVertical: this.model.get('tiling_padding_vertical'),
+          uniformNodeDimensions: this.model.get('uniform_node_dimensions'),
+
           stop: () => {
             layout.destroy();
             this.send({"type": "layout_stop"});

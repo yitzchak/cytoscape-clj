@@ -136,19 +136,53 @@
   (:metaclass jupyter-widgets:trait-metaclass))
 
 
-(defclass physics-slots ()
+(defclass refresh-slot ()
   ((refresh
      :accessor refresh
      :initarg :refresh
      :initform 1
      :documentation "Number of ticks per frame; higher is faster but more jerky"
-     :trait :int)
-   (randomize
+     :trait :int))
+  (:metaclass jupyter-widgets:trait-metaclass))
+
+
+(defclass randomize-slot ()
+  ((randomize
      :accessor randomize
      :initarg :randomize
      :initform nil
      :documentation "Use random node positions at beginning of layout"
      :trait :bool))
+  (:metaclass jupyter-widgets:trait-metaclass))
+
+
+(defclass nesting-factor-slot ()
+  ((nesting-factor
+     :accessor nesting-factor
+     :initarg :nesting-factor
+     :initform 1.2d0
+     :documentation "Nesting factor (multiplier) to compute ideal edge length for nested edges"
+     :trait :float))
+  (:metaclass jupyter-widgets:trait-metaclass))
+
+
+(defclass num-iter-slot ()
+  ((num-iter
+     :accessor num-iter
+     :initarg :num-iter
+     :initform 1000
+     :documentation "Maximum number of iterations to perform"
+     :trait :int))
+  (:metaclass jupyter-widgets:trait-metaclass))
+
+
+(defclass gravity-slot ()
+  ((gravity
+     :accessor gravity
+     :initarg :gravity
+     :initform 1
+     :documentation "Gravity force (constant)"
+     :trait :float))
   (:metaclass jupyter-widgets:trait-metaclass))
 
 
@@ -316,7 +350,8 @@
 
 
 (defclass cose-layout (graph-layout bounding-box-slot common-slots animation-slots
-                       node-dimensions-include-labels-slot physics-slots)
+                       node-dimensions-include-labels-slot refresh-slot randomize-slot
+                       nesting-factor-slot num-iter-slot gravity-slot)
   ((component-spacing
      :accessor component-spacing
      :initarg :component-spacing
@@ -335,12 +370,6 @@
      :initform 32
      :documentation "Divisor to compute edge forces. Can also be set per edge via data."
      :trait :int)
-   (gravity
-     :accessor gravity
-     :initarg :gravity
-     :initform 1
-     :documentation "Gravity force (constant)"
-     :trait :float)
    (ideal-edge-length
      :accessor ideal-edge-length
      :initarg :ideal-edge-length
@@ -359,12 +388,6 @@
      :initform 1.0d0
      :documentation "Lower temperature threshold (below this point the layout will end)"
      :trait :float)
-   (nesting-factor
-     :accessor nesting-factor
-     :initarg :nesting-factor
-     :initform 1.2d0
-     :documentation "Nesting factor (multiplier) to compute ideal edge length for nested edges"
-     :trait :float)
    (node-overlap
      :accessor node-overlap
      :initarg :node-overlap
@@ -376,12 +399,6 @@
      :initarg :node-repulsion
      :initform 2048
      :documentation "Node repulsion (non overlapping) multiplier. Can also be set per node in data."
-     :trait :int)
-   (num-iter
-     :accessor num-iter
-     :initarg :num-iter
-     :initform 1000
-     :documentation "Maximum number of iterations to perform"
      :trait :int))
   (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Cose graph layout algorithm.")
@@ -394,7 +411,7 @@
 
 
 (defclass cola-layout (graph-layout bounding-box-slot common-slots avoid-overlap-slot
-                       node-dimensions-include-labels-slot physics-slots)
+                       node-dimensions-include-labels-slot refresh-slot randomize-slot)
   ((alignment
      :accessor alignment
      :initarg :alignment
@@ -534,4 +551,120 @@
 
 (jupyter-widgets:register-widget Dagre-layout)
 
+
+(defclass fcose-layout (graph-layout animation-slots common-slots gravity-slot nesting-factor-slot
+                        node-dimensions-include-labels-slot num-iter-slot randomize-slot)
+  ((quality
+     :accessor quality
+     :initarg :quality
+     :initform "default"
+     :documentation "Layout quality"
+     :trait :unicode)
+   (uniform-node-dimensions
+     :accessor uniform-node-dimensions
+     :initarg :uniform-node-dimensions
+     :initform nil
+     :documentation "Whether or not simple nodes (non-compound nodes) are of uniform dimensions"
+     :trait :bool)
+   (pack-components
+     :accessor pack-components
+     :initarg :pack-components
+     :initform t
+     :documentation "Whether to pack disconnected components - valid only if randomize: true"
+     :trait :bool)
+   (sampling-type
+     :accessor sampling-type
+     :initarg :sampling-type
+     :initform t
+     :documentation "False for random, true for greedy sampling"
+     :trait :bool)
+   (sample-size
+     :accessor sample-size
+     :initarg :sample-size
+     :initform 25
+     :documentation "Sample size to construct distance matrix"
+     :trait :int)
+   (node-separation
+     :accessor node-separation
+     :initarg :node-separation
+     :initform 75
+     :documentation "Separation amount between nodes"
+     :trait :int)
+   (pi-tol
+     :accessor pi-tol
+     :initarg :pi-tol
+     :initform 0.0000001
+     :documentation "Power iteration tolerance"
+     :trait :int)
+   (node-repulsion
+     :accessor node-repulsion
+     :initarg :node-repulsion
+     :initform 4500
+     :documentation "Node repulsion (non overlapping) multiplier"
+     :trait :int)
+   (ideal-edge-length
+     :accessor ideal-edge-length
+     :initarg :ideal-edge-length
+     :initform 50
+     :documentation "Ideal edge (non nested) length"
+     :trait :int)
+   (edge-elasticity
+     :accessor edge-elasticity
+     :initarg :edge-elasticity
+     :initform 0.45
+     :documentation "Divisor to compute edge forces"
+     :trait :float)
+   (tile
+     :accessor tile
+     :initarg :tile
+     :initform t
+     :documentation "For enabling tiling"
+     :trait :bool)
+   (tile-padding-vertical
+     :accessor tile-padding-vertical
+     :initarg :tile-padding-vertical
+     :initform 10
+     :documentation "Represents the amount of the vertical space to put between the zero degree members during the tiling operation(can also be a function)"
+     :trait :int)
+   (tile-padding-horizontal
+     :accessor tile-padding-horizontal
+     :initarg :tile-padding-horizontal
+     :initform 10
+     :documentation "Represents the amount of the horizontal space to put between the zero degree members during the tiling operation(can also be a function)"
+     :trait :int)
+   (gravity-range-compound
+     :accessor gravity-range-compound
+     :initarg :gravity-range-compound
+     :initform 1.5d0
+     :documentation "Gravity range (constant) for compounds"
+     :trait :float)
+   (gravity-range
+     :accessor gravity-range
+     :initarg :gravity-range
+     :initform 3.8d0
+     :documentation "Gravity range (constant)"
+     :trait :float)
+   (gravity-compound
+     :accessor gravity-compound
+     :initarg :gravity-compound
+     :initform 1.0d0
+     :documentation "Gravity force (constant) for compounds"
+     :trait :float)
+   (initial-energy-on-incremental
+     :accessor initial-energy-on-incremental
+     :initarg :initial-energy-on-incremental
+     :initform 0.3d0
+     :documentation "Initial cooling factor for incremental layout"
+     :trait :float))
+  (:metaclass jupyter-widgets:trait-metaclass)
+  (:documentation "fCoSE graph layout algorithm.")
+  (:default-initargs
+    :%model-name "FCoSE_LayoutModel"
+    :%view-name "FCoSE_LayoutView"
+    :nesting-factor 0.1d0
+    :num-iter 2500
+    :gravity 0.25d0
+    :randomize t))
+
+(jupyter-widgets:register-widget fcose-layout)
 

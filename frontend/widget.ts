@@ -211,15 +211,19 @@ export class ElementView extends WidgetView {
     } else if (!this.is_rendered) {
       this.is_rendered = true;
 
-      let ele = this.cytoscape_obj.add({
+      this.cytoscape_obj.add({
         group: this.model.get('group'),
         data: { _cid: this.cid, ...this.model.get('data') },
         classes: this.model.get('classes'),
         selectable: this.model.get('selectable'),
         selected: this.model.get('selected'),
       });
+    }
+  }
 
-      if (this.model.get('removed')) this.cytoscape_obj.remove(ele);
+  set_visibility() {
+    if (this.cytoscape_obj && this.is_rendered && this.model.get('removed')) {
+      this.getElements().remove();
     }
   }
 }
@@ -407,20 +411,24 @@ export class CytoscapeView extends DOMWidgetView {
     });
 
     this.cytoscape_obj.on('add', async (e: any) => {
-      const view = await this.findElementView(e.target.data('_cid'));
+      if (!this.in_elements_changing) {
+        const view = await this.findElementView(e.target.data('_cid'));
 
-      if (view) {
-        view.model.set('removed', false);
-        view.model.save_changes();
+        if (view) {
+          view.model.set('removed', false);
+          view.model.save_changes();
+        }
       }
     });
 
     this.cytoscape_obj.on('remove', async (e: any) => {
-      const view = await this.findElementView(e.target.data('_cid'));
+      if (!this.in_elements_changing) {
+        const view = await this.findElementView(e.target.data('_cid'));
 
-      if (view) {
-        view.model.set('removed', true);
-        view.model.save_changes();
+        if (view) {
+          view.model.set('removed', true);
+          view.model.save_changes();
+        }
       }
     });
 
@@ -546,6 +554,10 @@ export class CytoscapeView extends DOMWidgetView {
       if (view.model.get('group') === 'edges') {
         await view.render();
       }
+    }
+
+    for (let view of views) {
+      view.set_visibility();
     }
 
     this.in_elements_changing = false;
