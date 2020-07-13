@@ -124,6 +124,7 @@ export class CytoscapeModel extends DOMWidgetModel {
 export class ElementView extends WidgetView {
   cytoscape_obj: any;
   is_rendered = false;
+  ele: any;
 
   constructor(params: any) {
     super({
@@ -143,7 +144,7 @@ export class ElementView extends WidgetView {
 
     this.on('remove', () => {
       if (this.cytoscape_obj) {
-        this.getElements().remove();
+        this.ele.remove();
       }
     });
   }
@@ -154,55 +155,55 @@ export class ElementView extends WidgetView {
 
   selected_changed() {
     if (this.model.get('selected')) {
-      this.getElements().select();
+      this.ele.select();
     } else {
-      this.getElements().unselect();
+      this.ele.unselect();
     }
   }
 
   selectable_changed() {
     if (this.model.get('selectable')) {
-      this.getElements().selectify();
+      this.ele.selectify();
     } else {
-      this.getElements().unselectify();
+      this.ele.unselectify();
     }
   }
 
   removed_changed() {
     if (this.model.get('removed')) {
-      this.getElements().remove();
+      this.ele.remove();
     } else {
-      this.getElements().restore();
+      this.ele.restore();
     }
     if (this.cytoscape_obj) this.cytoscape_obj.graph_layouts_changed();
   }
 
   locked_changed() {
     if (this.model.get('locked')) {
-      this.getElements().lock();
+      this.ele.lock();
     } else {
-      this.getElements().unlock();
+      this.ele.unlock();
     }
   }
 
   grabbable_changed() {
     if (this.model.get('grabbable')) {
-      this.getElements().grabify();
+      this.ele.grabify();
     } else {
-      this.getElements().ungrabify();
+      this.ele.ungrabify();
     }
   }
 
   classes_changed() {
-    this.getElements().classes(this.model.get('classes'));
+    this.ele.classes(this.model.get('classes'));
   }
 
   data_changed() {
-    this.getElements().data({ _cid: this.cid, ...this.model.get('data') });
+    this.ele.data({ _cid: this.cid, ...this.model.get('data') });
   }
 
   position_changed() {
-    this.getElements().position(this.model.get('position'));
+    this.ele.position(this.model.get('position'));
   }
 
   render() {
@@ -211,7 +212,7 @@ export class ElementView extends WidgetView {
     } else if (!this.is_rendered) {
       this.is_rendered = true;
 
-      this.cytoscape_obj.add({
+      this.ele = this.cytoscape_obj.add({
         group: this.model.get('group'),
         data: { _cid: this.cid, ...this.model.get('data') },
         classes: this.model.get('classes'),
@@ -223,7 +224,7 @@ export class ElementView extends WidgetView {
 
   set_visibility() {
     if (this.cytoscape_obj && this.is_rendered && this.model.get('removed')) {
-      this.getElements().remove();
+      this.ele.remove();
     }
   }
 }

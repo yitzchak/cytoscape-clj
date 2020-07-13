@@ -120,7 +120,9 @@
     #:rank-sep
     #:refresh
     #:removed
+    #:remove-elements
     #:reset
+    #:restore-elements
     #:roots
     #:rows
     #:sample-size
