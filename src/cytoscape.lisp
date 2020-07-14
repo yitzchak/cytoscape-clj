@@ -74,19 +74,7 @@
 (jupyter-widgets:register-widget element)
 
 
-(defclass cytoscape-style (jupyter-widgets:style)
-  ()
-  (:metaclass jupyter-widgets:trait-metaclass)
-  (:default-initargs
-    :%model-name "CytoscapeStyleModel"
-    :%model-module +module-name+
-    :%model-module-version +module-version+)
-  (:documentation "Cytoscape style widget"))
-
-(jupyter-widgets:register-widget cytoscape-style)
-
-
-(defclass cytoscape-widget (jupyter-widgets:styled-widget)
+(defclass cytoscape-widget (jupyter-widgets:dom-widget)
   ((min-zoom
      :accessor min-zoom
      :initarg :min-zoom
@@ -288,8 +276,7 @@
     :%model-module-version +module-version+
     :%view-name "CytoscapeView"
     :%view-module +module-name+
-    :%view-module-version +module-version+
-    :style (make-instance 'cytoscape-style)))
+    :%view-module-version +module-version+))
 
 (jupyter-widgets:register-widget cytoscape-widget)
 

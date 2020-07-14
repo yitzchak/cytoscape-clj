@@ -2,7 +2,6 @@ import {
   DOMWidgetModel,
   DOMWidgetView,
   ISerializers,
-  StyleModel,
   WidgetModel,
   WidgetView,
 } from '@jupyter-widgets/base';
@@ -49,18 +48,6 @@ export class ElementModel extends WidgetModel {
       classes: [],
       data: {},
       position: {},
-    };
-  }
-}
-
-export class CytoscapeStyleModel extends StyleModel {
-  defaults() {
-    return {
-      ...super.defaults(),
-
-      _model_name: 'CytoscapeStyleModel',
-      _model_module: MODULE_NAME,
-      _model_module_version: MODULE_VERSION,
     };
   }
 }
