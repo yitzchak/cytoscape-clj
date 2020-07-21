@@ -29,7 +29,7 @@
 
 (defmethod jupyter-widgets:on-custom-message ((w graph-layout) content buffers)
   (declare (ignore buffers))
-  (if (equal (jupyter:json-getf content "event") "layout_stop")
+  (if (equal (gethash "event" content) "layout_stop")
     (dolist (handler (%on-layout-stop w))
             ()
       (funcall handler w))
@@ -42,7 +42,7 @@
      :initarg :bounding-box
      :initform :null
      :documentation "constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }"
-     :trait :dict))
+     :trait :json))
   (:metaclass jupyter-widgets:trait-metaclass))
 
 
@@ -214,7 +214,7 @@
      :initarg :pan
      :initform :null
      :documentation "The pan level to set (prob want fit = false if set)"
-     :trait :dict)
+     :trait :json)
    (zoom
      :accessor zoom
      :initarg :zoom
@@ -417,7 +417,7 @@
      :initarg :alignment
      :initform :null
      :documentation "Relative alignment constraints on nodes. Can also be set per node via data."
-     :trait :dict)
+     :trait :json)
    (all-const-iter
      :accessor all-const-iter
      :initarg :all-const-iter

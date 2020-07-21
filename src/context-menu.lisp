@@ -18,7 +18,7 @@
      :initarg :content-style
      :initform nil
      :documentation "css key:value pairs to set the command's css in js if you want."
-     :trait :dict)
+     :trait :json)
    (enabled
      :accessor enabled
      :initarg :enabled
@@ -48,10 +48,10 @@
 
 (defmethod jupyter-widgets:on-custom-message ((w menu-command) content buffers)
   (declare (ignore buffers))
-  (if (equal (jupyter:json-getf content "event") "select")
+  (if (equal (gethash "event" content) "select")
     (dolist (handler (on-select w))
             ()
-      (funcall handler w (jupyter:json-getf content "id")))
+      (funcall handler w (gethash "id" content)))
     (call-next-method)))
 
 
