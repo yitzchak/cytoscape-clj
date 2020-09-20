@@ -162,7 +162,6 @@ export class ElementView extends WidgetView {
     } else {
       this.ele.restore();
     }
-    if (this.cytoscape_obj) this.cytoscape_obj.graph_layouts_changed();
   }
 
   locked_changed() {
