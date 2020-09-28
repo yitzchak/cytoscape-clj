@@ -42,7 +42,7 @@
      :initarg :bounding-box
      :initform :null
      :documentation "constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }"
-     :trait :json))
+     :trait :alist))
   (:metaclass jupyter-widgets:trait-metaclass))
 
 
@@ -453,13 +453,13 @@
      :initarg :flow
      :initform :null
      :documentation "use DAG/tree flow layout if specified, e.g. { axis: 'y', minSeparation: 30 }"
-     :trait :json)
+     :trait :alist)
    (gap-inequalities
      :accessor gap-inequalities
      :initarg :gap-inequalities
      :initform :null
      :documentation "list of inequality constraints for the gap between the nodes, e.g. [{\"axis\":\"y\", \"left\":node1, \"right\":node2, \"gap\":25}]"
-     :trait :json)
+     :trait :alist)
    (handle-disconnected
      :accessor handle-disconnected
      :initarg :handle-disconnected

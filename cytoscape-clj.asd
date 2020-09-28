@@ -4,8 +4,7 @@
   :author "Tarn W. Burton"
   :license "MIT"
   :depends-on
-    (:common-lisp-jupyter
-     :jsown)
+    (:common-lisp-jupyter)
   :components
     ((:module src
       :serial t

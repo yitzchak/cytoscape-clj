@@ -241,7 +241,7 @@
    (pan
      :accessor pan
      :initarg :pan
-     :initform (list (cons :x 0) (cons :y 0))
+     :initform (list (cons "x" 0) (cons "y" 0))
      :documentation "Pan location of the graph."
      :trait :alist)
    (zoom
@@ -309,8 +309,8 @@
     (setf (elements instance)
           (append (elements instance)
                   (mapcar (lambda (j)
-                            (make-instance 'element :group group :data (cdr (jsown:val j "data"))))
-                          (jsown:val value group))))))
+                            (make-instance 'element :group group :data (cdr (assoc "data" j :test #'string=))))
+                          (cdr (assoc group value :test #'string=)))))))
 
 ; (defmethod add-graph (instance (value array))
 ;   (unless (and (= 2 (array-rank value))
