@@ -5,64 +5,64 @@
      :accessor group
      :initarg :group
      :initform "nodes"
-     :documentation ""
+     :documentation "Element type. Must be either nodes or edges."
      :trait :unicode)
    (removed
      :accessor removed
      :initarg :removed
      :initform nil
-     :documentation ""
+     :documentation "T if the element has been removed from the graph."
      :trait :bool)
    (selected
      :accessor selected
      :initarg :selected
      :initform nil
-     :documentation ""
+     :documentation "Whether the element is selected in the graph."
      :trait :bool)
    (selectable
      :accessor selectable
      :initarg :selectable
      :initform t
-     :documentation ""
+     :documentation "T if the element can be selected."
      :trait :bool)
    (locked
      :accessor locked
      :initarg :locked
      :initform nil
-     :documentation ""
+     :documentation "T if the element will not be moved during a layout."
      :trait :bool)
    (grabbed
      :accessor grabbed
      :initarg :grabbed
      :initform nil
-     :documentation ""
+     :documentation "T if if the element is currently grabbed."
      :trait :bool)
    (grabbable
      :accessor grabbable
      :initarg :grabbable
      :initform t
-     :documentation ""
+     :documentation "T if the element can be grabbed."
      :trait :bool)
    (classes
      :accessor classes
      :initarg :classes
      :initform nil
-     :documentation ""
+     :documentation "A list of CSS classes"
      :trait :list)
    (data
      :accessor data
      :initarg :data
      :initform nil
-     :documentation ""
+     :documentation "An alist of the properties of the element."
      :trait :dict)
    (position
      :accessor %position
      :initarg :position
      :initform nil
-     :documentation ""
+     :documentation "The position of the element."
      :trait :dict))
   (:metaclass jupyter-widgets:trait-metaclass)
-  (:documentation "")
+  (:documentation "A node or an edge in a graph.")
   (:default-initargs
     :%model-name "ElementModel"
     :%model-module +module-name+
