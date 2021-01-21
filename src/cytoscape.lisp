@@ -54,13 +54,13 @@
      :initarg :data
      :initform nil
      :documentation "An alist of the properties of the element."
-     :trait :dict)
+     :trait :alist)
    (position
      :accessor %position
      :initarg :position
      :initform nil
      :documentation "The position of the element."
-     :trait :dict))
+     :trait :alist))
   (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "A node or an edge in a graph.")
   (:default-initargs
@@ -243,7 +243,7 @@
      :initarg :pan
      :initform (list (cons :x 0) (cons :y 0))
      :documentation "Pan location of the graph."
-     :trait :dict)
+     :trait :alist)
    (zoom
      :accessor zoom
      :initarg :zoom

@@ -31,6 +31,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "lab-install": "yarn pack -f cytoscape-clj.tgz && jupyter-labextension install --no-build cytoscape-clj.tgz && sleep 5 && jupyter-lab build",
     "lint": "eslint . --ext .ts --fix",
     "lint-check": "eslint . --ext .ts",
     "prepack": "yarn run build"
