@@ -250,12 +250,6 @@
      :initform 1.0
      :documentation "Zoom level of the graph."
      :trait :float)
-   (tooltip-source
-     :accessor tooltip-source
-     :initarg :tooltip-source
-     :initform "tooltip"
-     :documentation "Field name in data of the tooltips."
-     :trait :unicode)
    (elements
      :accessor elements
      :initarg :elements

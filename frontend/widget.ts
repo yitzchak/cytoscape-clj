@@ -16,15 +16,6 @@ import '../css/widget.css';
 
 import cytoscape from 'cytoscape';
 
-// @ts-ignore
-import popper from 'cytoscape-popper';
-// @ts-ignore
-import Tippy, { Instance } from 'tippy.js';
-
-import 'tippy.js/themes/material.css';
-
-cytoscape.use(popper);
-
 
 export class ElementModel extends WidgetModel {
   defaults() {
@@ -94,9 +85,7 @@ export class CytoscapeModel extends DOMWidgetModel {
       wheel_sensitivity: 1,
       pixel_ratio: 'auto',
 
-      context_menus: [],
-
-      tooltip_source: '',
+      context_menus: []
     };
   }
 
@@ -479,36 +468,6 @@ export class CytoscapeView extends DOMWidgetView {
       if (view) {
         view.model.set('position', e.target.position());
         view.model.save_changes();
-      }
-    });
-
-    this.cytoscape_obj.on('click', (e: any) => {
-      const element = e.target;
-      const ref = element.popperRef();
-      const dummyDomEle = document.createElement('div');
-
-      const tooltip_source = this.model.get('tooltip_source');
-      if (element.data()[tooltip_source]) {
-        const tip = Tippy(dummyDomEle, {
-          trigger: 'manual',
-          lazy: false,
-          arrow: true,
-          theme: 'material',
-          placement: 'bottom',
-          content: () => {
-            const content = document.createElement('div');
-            content.innerHTML = element
-              .data()
-              [tooltip_source].replace(/(?:\r\n|\r|\n)/g, '<br>');
-            return content;
-          },
-          onCreate: (instance: Instance | undefined) => {
-            if (instance && instance.popperInstance) {
-              instance.popperInstance.reference = ref;
-            }
-          },
-        });
-        tip.show();
       }
     });
 

@@ -142,7 +142,6 @@
     #:tile-padding-horizontal
     #:tile-padding-vertical
     #:toggle-fullscreen
-    #:tooltip-source
     #:touch-tap-threshold
     #:unconst-iter
     #:ungrabify-while-simulating
