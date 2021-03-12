@@ -276,28 +276,33 @@
 
 (defun reset (instance)
   (jupyter-widgets:send-custom instance
-                               '(("do" . "reset"))))
+                               '(:object-alist
+                                 ("do" . "reset"))))
 
 
 (defun center (instance)
   (jupyter-widgets:send-custom instance
-                               '(("do" . "center"))))
+                               '(:object-alist
+                                 ("do" . "center"))))
 
 
 (defun fit-elements (instance &key elements (padding 0))
   (declare (ignore elements))
   (jupyter-widgets:send-custom instance
-                               `(("do" . "fit")
+                               `(:object-alist
+                                 ("do" . "fit")
                                  ("padding" . ,padding))))
 
 
 (defun toggle-fullscreen (instance)
   (jupyter-widgets:send-custom instance
-                               '(("do" . "toggle_fullscreen"))))
+                               '(:object-alist
+                                 ("do" . "toggle_fullscreen"))))
 
 (defun layout (instance)
   (jupyter-widgets:send-custom instance
-                               '(("do" . "layout"))))
+                               '(:object-alist
+                                 ("do" . "layout"))))
 
 
 (defgeneric add-graph (instance value &rest args)
