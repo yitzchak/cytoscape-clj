@@ -22,7 +22,6 @@
     :%view-module +module-name+
     :%view-module-version +module-version+))
 
-(jupyter-widgets:register-widget graph-layout)
 
 (defun on-layout-stop (widget handler)
   (push handler (%on-layout-stop widget)))
@@ -194,8 +193,6 @@
     :%model-name "NullLayoutModel"
     :%view-name "NullLayoutView"))
 
-(jupyter-widgets:register-widget null-layout)
-
 
 (defclass random-layout (graph-layout bounding-box-slot common-slots animation-slots)
   ()
@@ -204,8 +201,6 @@
   (:default-initargs
     :%model-name "RandomLayoutModel"
     :%view-name "RandomLayoutView"))
-
-(jupyter-widgets:register-widget random-layout)
 
 
 (defclass preset-layout (graph-layout common-slots animation-slots)
@@ -226,8 +221,6 @@
   (:default-initargs
     :%model-name "PresetLayoutModel"
     :%view-name "PresetLayoutView"))
-
-(jupyter-widgets:register-widget preset-layout)
 
 
 (defclass grid-layout (graph-layout bounding-box-slot common-slots animation-slots
@@ -262,8 +255,6 @@
     :%model-name "GridLayoutModel"
     :%view-name "GridLayoutView"))
 
-(jupyter-widgets:register-widget grid-layout)
-
 
 (defclass circle-layout (graph-layout bounding-box-slot common-slots animation-slots
                          avoid-overlap-slot node-dimensions-include-labels-slot spacing-factor-slot
@@ -279,8 +270,6 @@
   (:default-initargs
     :%model-name "CircleLayoutModel"
     :%view-name "CircleLayoutView"))
-
-(jupyter-widgets:register-widget circle-layout)
 
 
 (defclass concentric-layout (graph-layout bounding-box-slot common-slots animation-slots
@@ -303,8 +292,6 @@
   (:default-initargs
     :%model-name "ConcentricLayoutModel"
     :%view-name "ConcentricLayoutView"))
-
-(jupyter-widgets:register-widget concentric-layout)
 
 
 (defclass breadth-first-layout (graph-layout bounding-box-slot common-slots animation-slots
@@ -345,8 +332,6 @@
   (:default-initargs
     :%model-name "BreadthFirstLayoutModel"
     :%view-name "BreadthFirstLayoutView"))
-
-(jupyter-widgets:register-widget breadth-first-layout)
 
 
 (defclass cose-layout (graph-layout bounding-box-slot common-slots animation-slots
@@ -406,8 +391,6 @@
     :%model-name "CoseLayoutModel"
     :%view-name "CoseLayoutView"
     :refresh 10))
-
-(jupyter-widgets:register-widget cose-layout)
 
 
 (defclass cola-layout (graph-layout bounding-box-slot common-slots avoid-overlap-slot
@@ -496,8 +479,6 @@
     :%model-name "ColaLayoutModel"
     :%view-name "ColaLayoutView"))
 
-(jupyter-widgets:register-widget cola-layout)
-
 
 (defclass dagre-layout (graph-layout bounding-box-slot common-slots animation-slots
                         node-dimensions-include-labels-slot spacing-factor-slot)
@@ -548,8 +529,6 @@
   (:default-initargs
     :%model-name "DagreLayoutModel"
     :%view-name "DagreLayoutView"))
-
-(jupyter-widgets:register-widget Dagre-layout)
 
 
 (defclass fcose-layout (graph-layout animation-slots common-slots gravity-slot nesting-factor-slot
@@ -665,6 +644,4 @@
     :num-iter 2500
     :gravity 0.25d0
     :randomize t))
-
-(jupyter-widgets:register-widget fcose-layout)
 

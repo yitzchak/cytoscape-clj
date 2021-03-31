@@ -13,4 +13,5 @@
          (:file "version")
          (:file "context-menu")
          (:file "graph-layout")
-         (:file "cytoscape")))))
+         (:file "cytoscape")
+         (:file "register-widgets")))))

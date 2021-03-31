@@ -54,7 +54,7 @@
      :initarg :data
      :initform nil
      :documentation "An alist of the properties of the element."
-     :trait :alist)
+     :trait :json)
    (position
      :accessor %position
      :initarg :position
@@ -70,8 +70,6 @@
     :%view-name "ElementView"
     :%view-module +module-name+
     :%view-module-version +module-version+))
-
-(jupyter-widgets:register-widget element)
 
 
 (defclass cytoscape-widget (jupyter-widgets:dom-widget)
@@ -113,7 +111,7 @@
      :trait :bool)
    (user-panning-enabled
      :accessor user-panning-enabled
-     :initarg :panning-enabled
+     :initarg :user-panning-enabled
      :initform t
      :documentation "Whether user events (e.g. dragging the graph background) are
        allowed to pan the graph. Programmatic changes to pan are unaffected by
@@ -272,7 +270,6 @@
     :%view-module +module-name+
     :%view-module-version +module-version+))
 
-(jupyter-widgets:register-widget cytoscape-widget)
 
 (defun reset (instance)
   (jupyter-widgets:send-custom instance

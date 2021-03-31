@@ -40,7 +40,6 @@
     :%view-module +module-name+
     :%view-module-version +module-version+))
 
-(jupyter-widgets:register-widget menu-command)
 
 (defun on-menu-command-select (widget handler)
   "Add a new selection handler for a menu command."
@@ -161,6 +160,4 @@
     :%view-name "ContextMenuView"
     :%view-module +module-name+
     :%view-module-version +module-version+))
-
-(jupyter-widgets:register-widget context-menu)
 
