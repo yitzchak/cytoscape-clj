@@ -14,7 +14,7 @@ Once the extension has been installed then widget can be loaded in a notebook
 using Quicklisp.
 
 ```lisp
-(ql:quickload :kekule-clj)
+(ql:quickload :cytoscape-clj)
 ```
 
 ## Usage
