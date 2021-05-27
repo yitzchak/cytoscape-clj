@@ -29,24 +29,30 @@ use the following.
               :graph-style "node { label: data(id); }"
               :elements (list (make-instance 'cytoscape:element
                                              :group "nodes"
-                                             :data `(("id" . "a")))
+                                             :data `(:object-alist
+                                                     ("id" . "a")))
                               (make-instance 'cytoscape:element
                                              :group "nodes"
-                                             :data `(("id" . "b")))
+                                             :data `(:object-alist
+                                                     ("id" . "b")))
                               (make-instance 'cytoscape:element
                                              :group "nodes"
-                                             :data `(("id" . "c")))
+                                             :data `(:object-alist
+                                                     ("id" . "c")))
                               (make-instance 'cytoscape:element
                                              :group "edges"
-                                             :data `(("source" . "a")
+                                             :data `(:object-alist
+                                                     ("source" . "a")
                                                      ("target" . "b")))
                               (make-instance 'cytoscape:element
                                              :group "edges"
-                                             :data `(("source" . "a")
+                                             :data `(:object-alist
+                                                     ("source" . "a")
                                                      ("target" . "c")))
                               (make-instance 'cytoscape:element
                                              :group "edges"
-                                             :data `(("source" . "b")
+                                             :data `(:object-alist
+                                                     ("source" . "b")
                                                      ("target" . "c")))))
 ```
 
