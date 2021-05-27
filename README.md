@@ -24,36 +24,36 @@ For sample notebooks please see the examples directory. The main widgets are
 use the following.
 
 ```lisp
-(make-intance 'cytoscape:cytoscape-widget
-              :graph-layouts (list (make-instance 'cytoscape:cose-layout))
-              :graph-style "node { label: data(id); }"
-              :elements (list (make-instance 'cytoscape:element
-                                             :group "nodes"
-                                             :data `(:object-alist
-                                                     ("id" . "a")))
-                              (make-instance 'cytoscape:element
-                                             :group "nodes"
-                                             :data `(:object-alist
-                                                     ("id" . "b")))
-                              (make-instance 'cytoscape:element
-                                             :group "nodes"
-                                             :data `(:object-alist
-                                                     ("id" . "c")))
-                              (make-instance 'cytoscape:element
-                                             :group "edges"
-                                             :data `(:object-alist
-                                                     ("source" . "a")
-                                                     ("target" . "b")))
-                              (make-instance 'cytoscape:element
-                                             :group "edges"
-                                             :data `(:object-alist
-                                                     ("source" . "a")
-                                                     ("target" . "c")))
-                              (make-instance 'cytoscape:element
-                                             :group "edges"
-                                             :data `(:object-alist
-                                                     ("source" . "b")
-                                                     ("target" . "c")))))
+(make-instance 'cytoscape:cytoscape-widget
+               :graph-layouts (list (make-instance 'cytoscape:cose-layout))
+               :graph-style "node { label: data(id); }"
+               :elements (list (make-instance 'cytoscape:element
+                                              :group "nodes"
+                                              :data `(:object-alist
+                                                      ("id" . "a")))
+                               (make-instance 'cytoscape:element
+                                              :group "nodes"
+                                              :data `(:object-alist
+                                                      ("id" . "b")))
+                               (make-instance 'cytoscape:element
+                                              :group "nodes"
+                                              :data `(:object-alist
+                                                      ("id" . "c")))
+                               (make-instance 'cytoscape:element
+                                              :group "edges"
+                                              :data `(:object-alist
+                                                      ("source" . "a")
+                                                      ("target" . "b")))
+                               (make-instance 'cytoscape:element
+                                              :group "edges"
+                                              :data `(:object-alist
+                                                      ("source" . "a")
+                                                      ("target" . "c")))
+                               (make-instance 'cytoscape:element
+                                              :group "edges"
+                                              :data `(:object-alist
+                                                      ("source" . "b")
+                                                      ("target" . "c")))))
 ```
 
 [common-lisp-jupyter]: https://yitzchak.github.io/common-lisp-jupyter/ 
