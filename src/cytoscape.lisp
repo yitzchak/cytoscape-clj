@@ -1,6 +1,6 @@
 (in-package :cytoscape)
 
-(defclass element (jupyter-widgets:widget)
+(jupyter-widgets:defwidget element (jupyter-widgets:widget)
   ((group
      :accessor group
      :initarg :group
@@ -61,7 +61,6 @@
      :initform nil
      :documentation "The position of the element."
      :trait :alist))
-  (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "A node or an edge in a graph.")
   (:default-initargs
     :%model-name "ElementModel"
@@ -72,7 +71,7 @@
     :%view-module-version +module-version+))
 
 
-(defclass cytoscape-widget (jupyter-widgets:dom-widget)
+(jupyter-widgets:defwidget cytoscape-widget (jupyter-widgets:dom-widget)
   ((min-zoom
      :accessor min-zoom
      :initarg :min-zoom
@@ -260,8 +259,7 @@
      :initform nil
      :documentation "The context menus for the graph"
      :trait :widget-list))
-  (:metaclass jupyter-widgets:trait-metaclass)
-  (:documentation "")
+  (:documentation "Cytoscape graph widget.")
   (:default-initargs
     :%model-name "CytoscapeModel"
     :%model-module +module-name+
@@ -313,6 +311,19 @@
                   (mapcar (lambda (j)
                             (make-instance 'element :group group :data (cdr (assoc "data" j :test #'string=))))
                           (cdr (assoc group value :test #'string=)))))))
+
+(defmethod add-graph (instance (value hash-table) &rest args)
+  (declare (ignore args))
+  (setf (elements instance)
+        (nconc (map 'list
+                    (lambda (node)
+                      (make-element :group "nodes" :data (gethash "data" node)))
+                    (gethash "nodes" value))
+               (map 'list
+                    (lambda (edge)
+                      (make-element :group "edges" :data (gethash "data" edge)))
+                    (gethash "edges" value))))
+  (values))
 
 ; (defmethod add-graph (instance (value array))
 ;   (unless (and (= 2 (array-rank value))

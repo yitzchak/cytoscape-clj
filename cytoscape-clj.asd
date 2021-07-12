@@ -11,7 +11,7 @@
       :components
         ((:file "packages")
          (:file "version")
+         (:file "common-slots")
          (:file "context-menu")
          (:file "graph-layout")
-         (:file "cytoscape")
-         (:file "register-widgets")))))
+         (:file "cytoscape")))))

@@ -1,6 +1,6 @@
 (in-package :cytoscape)
 
-(defclass menu-command (jupyter-widgets:widget)
+(jupyter-widgets:defwidget menu-command (jupyter-widgets:widget)
   ((fill-color
      :accessor fill-color
      :initarg :fill-color
@@ -30,7 +30,6 @@
      :initform nil
      :documentation "Selection handlers"
      :accessor on-select))
-  (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Menu commands and selection handlers for context menus.")
   (:default-initargs
     :%model-name "MenuCommandModel"
@@ -54,7 +53,7 @@
     (call-next-method)))
 
 
-(defclass context-menu (jupyter-widgets:widget)
+(jupyter-widgets:defwidget context-menu (jupyter-widgets:widget)
   ((menu-radius
      :accessor menu-radius
      :initarg :menu-radius
@@ -151,7 +150,6 @@
      :initform nil
      :documentation "draw menu at mouse position"
      :trait :bool))
-  (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Context menu for cytoscape.")
   (:default-initargs
     :%model-name "ContextMenuModel"

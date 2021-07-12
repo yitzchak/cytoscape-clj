@@ -19,6 +19,9 @@ cytoscape.use(dagre);
 import fcose from 'cytoscape-fcose';
 cytoscape.use(fcose);
 
+// @ts-ignore
+import klay from 'cytoscape-klay';
+cytoscape.use(klay);
 
 export class GraphLayoutModel extends WidgetModel {
   defaults() {
@@ -751,6 +754,104 @@ export class FCoSE_LayoutView extends GraphLayoutView {
           tilingPaddingHorizontal: this.model.get('tiling_padding_horizontal'),
           tilingPaddingVertical: this.model.get('tiling_padding_vertical'),
           uniformNodeDimensions: this.model.get('uniform_node_dimensions'),
+
+          stop: () => {
+            layout.destroy();
+            this.send({"type": "layout_stop"});
+            resolve();
+          }
+        });
+
+        layout.run();
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+}
+
+
+export class KlayLayoutModel extends GraphLayoutModel {
+  defaults() {
+    return {
+      ...super.defaults(),
+
+      _model_name: 'KlayLayoutModel',
+      _view_name: 'KlayLayoutView',
+
+      animate: true,
+      animation_duration: 1000,
+      animation_easing: undefined,
+      fit: true,
+      node_dimensions_include_labels: false,
+      padding: 30,
+
+      add_unnecessary_bendpoints: false,
+      aspect_ratio: 1.6,
+      border_spacing: 20,
+      compact_components: false,
+      crossing_minimization: 'LAYER_SWEEP',
+      cycle_breaking: 'GREEDY',
+      direction: 'UNDEFINED',
+      edge_routing: 'ORTHOGONAL',
+      edge_spacing_factor: 0.5,
+      feedback_edges: false,
+      fixed_alignment: 'NONE',
+      in_layer_spacing_factor: 1.0,
+      layout_hierarchy: false,
+      linear_segments_deflection_dampening: 0.3,
+      merge_edges: false,
+      merge_hierarchy_crossing_edges: true,
+      node_layering: 'NETWORK_SIMPLEX',
+      node_placement: 'BRANDES_KOEPF',
+      randomization_seed: 1,
+      route_self_loop_inside: false,
+      separate_connected_components: true,
+      spacing: 20,
+      thoroughness: 7
+    };
+  }
+}
+
+
+export class KlayLayoutView extends GraphLayoutView {
+  layout(ele: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      try {
+        let layout = ele.layout({
+          name: 'klay',
+
+          animate: this.model.get('animate'),
+          animationDuration: this.model.get('animation_duration'),
+          animationEasing: this.model.get('animation_easing') || undefined,
+          fit: this.model.get('fit'),
+          nodeDimensionsIncludeLabels: this.model.get('node_dimensions_include_labels'),
+          padding: this.model.get('padding'),
+          klay: {
+            addUnnecessaryBendpoints: this.model.get('add_unnecessary_bendpoints'),
+            aspectRatio: this.model.get('aspect_ratio'),
+            borderSpacing: this.model.get('border_spacing'),
+            compactComponents: this.model.get('compact_components'),
+            crossingMinimization: this.model.get('crossing_minimization'),
+            cycleBreaking: this.model.get('cycle_breaking'),
+            direction: this.model.get('direction'),
+            edgeRouting: this.model.get('edge_routing'),
+            edgeSpacingFactor: this.model.get('edge_spacing_factor'),
+            feedbackEdges: this.model.get('feedback_edges'),
+            fixedAlignment: this.model.get('fixed_alignment'),
+            inLayerSpacingFactor: this.model.get('in_layer_spacing_factor'),
+            layoutHierarchy: this.model.get('layout_hierarchy'),
+            linearSegmentsDeflectionDampening: this.model.get('linear_segments_deflection_dampening'),
+            mergeEdges: this.model.get('merge_edges'),
+            mergeHierarchyCrossingEdges: this.model.get('merge_hierarchy_crossing_edges'),
+            nodeLayering: this.model.get('node_layering'),
+            nodePlacement: this.model.get('node_placement'),
+            randomizationSeed: this.model.get('randomization_seed'),
+            routeSelfLoopInside: this.model.get('route_self_loop_inside'),
+            separateConnectedComponents: this.model.get('separate_connected_components'),
+            spacing: this.model.get('spacing'),
+            thoroughness: this.model.get('thoroughness')
+          },
 
           stop: () => {
             layout.destroy();

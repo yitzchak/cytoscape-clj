@@ -1,7 +1,7 @@
 (in-package :cytoscape)
 
 
-(defclass graph-layout (jupyter-widgets:widget)
+(jupyter-widgets:defwidget graph-layout (jupyter-widgets:widget)
   ((selector
      :accessor selector
      :initarg :selector
@@ -12,7 +12,6 @@
      :initarg :on-layout-stop
      :initform nil
      :accessor %on-layout-stop))
-  (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Graph layout algorithm.")
   (:default-initargs
     :%model-name "GraphLayoutModel"
@@ -35,175 +34,24 @@
     (call-next-method)))
 
 
-(defclass bounding-box-slot ()
-  ((bounding-box
-     :accessor bounding-box
-     :initarg :bounding-box
-     :initform :null
-     :documentation "constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }"
-     :trait :alist))
-  (:metaclass jupyter-widgets:trait-metaclass))
-
-
-(defclass common-slots ()
-  ((animate
-     :accessor animate
-     :initarg :animate
-     :initform t
-     :documentation "Whether to animate changes to the layout"
-     :trait :bool)
-   (fit
-     :accessor fit
-     :initarg :fit
-     :initform t
-     :documentation "Whether to fit the viewport to the graph"
-     :trait :bool)
-   (padding
-     :accessor padding
-     :initarg :padding
-     :initform 30
-     :documentation "Padding to leave between graph and viewport"
-     :trait :int))
-  (:metaclass jupyter-widgets:trait-metaclass))
-
-
-(defclass animation-slots ()
-  ((animation-duration
-     :accessor animation-duration
-     :initarg :animation-duration
-     :initform 250
-     :documentation "Duration of animation in ms, if enabled"
-     :trait :int)
-   (animation-easing
-     :accessor animation-easing
-     :initarg :animation-easing
-     :initform :null
-     :documentation "Easing of animation, if enabled"
-     :trait :unicode))
-  (:metaclass jupyter-widgets:trait-metaclass))
-
-
-(defclass avoid-overlap-slot ()
-  ((avoid-overlap
-     :accessor avoid-overlap
-     :initarg :avoid-overlap
-     :initform t
-     :documentation "Prevents node overlap, may overflow boundingBox if not enough space"
-     :trait :bool))
-  (:metaclass jupyter-widgets:trait-metaclass))
-
-
-(defclass node-dimensions-include-labels-slot ()
-  ((node-dimensions-include-labels
-     :accessor node-dimensions-include-labels
-     :initarg :node-dimensions-include-labels
-     :initform nil
-     :documentation "Includes the label when calculating node bounding boxes for the layout algorithm."
-     :trait :bool))
-  (:metaclass jupyter-widgets:trait-metaclass))
-
-
-(defclass spacing-factor-slot ()
-  ((spacing-factor
-     :accessor spacing-factor
-     :initarg :spacing-factor
-     :initform :null
-     :documentation "Applies a multiplicative factor (>0) to expand or compress the overall area that the nodes take up"
-     :trait :float))
-  (:metaclass jupyter-widgets:trait-metaclass))
-
-
-(defclass radial-slots ()
-  ((clockwise
-     :accessor clockwise
-     :initarg :clockwise
-     :initform t
-     :documentation "Whether the layout should go clockwise (true) or counterclockwise/anticlockwise (false)"
-     :trait :bool)
-   (start-angle
-     :accessor start-angle
-     :initarg :start-angle
-     :initform (* 3/2 pi)
-     :documentation "Where nodes start in radians"
-     :trait :float)
-   (sweep
-     :accessor sweep
-     :initarg :sweep
-     :initform :null
-     :documentation "How many radians should be between the first and last node (defaults to full circle)"
-     :trait :float))
-  (:metaclass jupyter-widgets:trait-metaclass))
-
-
-(defclass refresh-slot ()
-  ((refresh
-     :accessor refresh
-     :initarg :refresh
-     :initform 1
-     :documentation "Number of ticks per frame; higher is faster but more jerky"
-     :trait :int))
-  (:metaclass jupyter-widgets:trait-metaclass))
-
-
-(defclass randomize-slot ()
-  ((randomize
-     :accessor randomize
-     :initarg :randomize
-     :initform nil
-     :documentation "Use random node positions at beginning of layout"
-     :trait :bool))
-  (:metaclass jupyter-widgets:trait-metaclass))
-
-
-(defclass nesting-factor-slot ()
-  ((nesting-factor
-     :accessor nesting-factor
-     :initarg :nesting-factor
-     :initform 1.2d0
-     :documentation "Nesting factor (multiplier) to compute ideal edge length for nested edges"
-     :trait :float))
-  (:metaclass jupyter-widgets:trait-metaclass))
-
-
-(defclass num-iter-slot ()
-  ((num-iter
-     :accessor num-iter
-     :initarg :num-iter
-     :initform 1000
-     :documentation "Maximum number of iterations to perform"
-     :trait :int))
-  (:metaclass jupyter-widgets:trait-metaclass))
-
-
-(defclass gravity-slot ()
-  ((gravity
-     :accessor gravity
-     :initarg :gravity
-     :initform 1
-     :documentation "Gravity force (constant)"
-     :trait :float))
-  (:metaclass jupyter-widgets:trait-metaclass))
-
-
-(defclass null-layout (graph-layout)
+(jupyter-widgets:defwidget null-layout (graph-layout)
   ()
-  (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Null graph layout algorithm.")
   (:default-initargs
     :%model-name "NullLayoutModel"
     :%view-name "NullLayoutView"))
 
 
-(defclass random-layout (graph-layout bounding-box-slot common-slots animation-slots)
+(jupyter-widgets:defwidget random-layout (graph-layout bounding-box-slot common-slots
+                                          animation-slots)
   ()
-  (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Random graph layout algorithm.")
   (:default-initargs
     :%model-name "RandomLayoutModel"
     :%view-name "RandomLayoutView"))
 
 
-(defclass preset-layout (graph-layout common-slots animation-slots)
+(jupyter-widgets:defwidget preset-layout (graph-layout common-slots animation-slots)
   ((pan
      :accessor pan
      :initarg :pan
@@ -216,15 +64,15 @@
      :initform :null
      :documentation "The zoom level to set (prob want fit = false if set)"
      :trait :float))
-  (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Preset graph layout algorithm.")
   (:default-initargs
     :%model-name "PresetLayoutModel"
     :%view-name "PresetLayoutView"))
 
 
-(defclass grid-layout (graph-layout bounding-box-slot common-slots animation-slots
-                       avoid-overlap-slot node-dimensions-include-labels-slot spacing-factor-slot)
+(jupyter-widgets:defwidget grid-layout (graph-layout bounding-box-slot common-slots animation-slots
+                                        avoid-overlap-slot node-dimensions-include-labels-slot
+                                        spacing-factor-slot)
   ((avoid-overlap-padding
      :accessor avoid-overlap-padding
      :initarg :avoid-overlap-padding
@@ -249,32 +97,32 @@
      :initform :null
      :documentation "Force num of rows in the grid"
      :trait :int))
-  (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Grid graph layout algorithm.")
   (:default-initargs
     :%model-name "GridLayoutModel"
     :%view-name "GridLayoutView"))
 
 
-(defclass circle-layout (graph-layout bounding-box-slot common-slots animation-slots
-                         avoid-overlap-slot node-dimensions-include-labels-slot spacing-factor-slot
-                         radial-slots)
+(jupyter-widgets:defwidget circle-layout (graph-layout bounding-box-slot common-slots
+                                          animation-slots avoid-overlap-slot
+                                          node-dimensions-include-labels-slot spacing-factor-slot
+                                          radial-slots)
   ((radius
      :accessor radius
      :initarg :radius
      :initform :null
      :documentation "The radius of the circle"
      :trait :float))
-  (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Circle graph layout algorithm.")
   (:default-initargs
     :%model-name "CircleLayoutModel"
     :%view-name "CircleLayoutView"))
 
 
-(defclass concentric-layout (graph-layout bounding-box-slot common-slots animation-slots
-                             avoid-overlap-slot node-dimensions-include-labels-slot
-                             spacing-factor-slot radial-slots)
+(jupyter-widgets:defwidget concentric-layout (graph-layout bounding-box-slot common-slots
+                                              animation-slots avoid-overlap-slot
+                                              node-dimensions-include-labels-slot
+                                              spacing-factor-slot radial-slots)
   ((equidistant
      :accessor equidistant
      :initarg :equidistant
@@ -287,16 +135,16 @@
      :initform 10
      :documentation "Min spacing between outside of nodes (used for radius adjustment)"
      :trait :float))
-  (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Concentric graph layout algorithm.")
   (:default-initargs
     :%model-name "ConcentricLayoutModel"
     :%view-name "ConcentricLayoutView"))
 
 
-(defclass breadth-first-layout (graph-layout bounding-box-slot common-slots animation-slots
-                                avoid-overlap-slot node-dimensions-include-labels-slot
-                                spacing-factor-slot)
+(jupyter-widgets:defwidget breadth-first-layout (graph-layout bounding-box-slot common-slots
+                                                 animation-slots avoid-overlap-slot
+                                                 node-dimensions-include-labels-slot
+                                                 spacing-factor-slot)
   ((circle
      :accessor circle
      :initarg :circle
@@ -327,16 +175,16 @@
      :initform :null
      :documentation "The roots of the trees"
      :trait :list))
-  (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Breadth first graph layout algorithm.")
   (:default-initargs
     :%model-name "BreadthFirstLayoutModel"
     :%view-name "BreadthFirstLayoutView"))
 
 
-(defclass cose-layout (graph-layout bounding-box-slot common-slots animation-slots
-                       node-dimensions-include-labels-slot refresh-slot randomize-slot
-                       nesting-factor-slot num-iter-slot gravity-slot)
+(jupyter-widgets:defwidget cose-layout (graph-layout bounding-box-slot common-slots animation-slots
+                                        node-dimensions-include-labels-slot refresh-slot
+                                        randomize-slot nesting-factor-slot num-iter-slot
+                                        gravity-slot)
   ((component-spacing
      :accessor component-spacing
      :initarg :component-spacing
@@ -385,7 +233,6 @@
      :initform 2048
      :documentation "Node repulsion (non overlapping) multiplier. Can also be set per node in data."
      :trait :int))
-  (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Cose graph layout algorithm.")
   (:default-initargs
     :%model-name "CoseLayoutModel"
@@ -393,8 +240,9 @@
     :refresh 10))
 
 
-(defclass cola-layout (graph-layout bounding-box-slot common-slots avoid-overlap-slot
-                       node-dimensions-include-labels-slot refresh-slot randomize-slot)
+(jupyter-widgets:defwidget cola-layout (graph-layout bounding-box-slot common-slots
+                                        avoid-overlap-slot node-dimensions-include-labels-slot
+                                        refresh-slot randomize-slot)
   ((alignment
      :accessor alignment
      :initarg :alignment
@@ -473,15 +321,14 @@
      :initform :null
      :documentation "initial layout iterations with user-specified constraints"
      :trait :int))
-  (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Cola graph layout algorithm.")
   (:default-initargs
     :%model-name "ColaLayoutModel"
     :%view-name "ColaLayoutView"))
 
 
-(defclass dagre-layout (graph-layout bounding-box-slot common-slots animation-slots
-                        node-dimensions-include-labels-slot spacing-factor-slot)
+(jupyter-widgets:defwidget dagre-layout (graph-layout bounding-box-slot common-slots animation-slots
+                                         node-dimensions-include-labels-slot spacing-factor-slot)
   ((edge-sep
      :accessor edge-sep
      :initarg :edge-sep
@@ -524,15 +371,15 @@
      :initform :null
      :documentation "the separation between each rank in the layout"
      :trait :int))
-  (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "Dagre graph layout algorithm.")
   (:default-initargs
     :%model-name "DagreLayoutModel"
     :%view-name "DagreLayoutView"))
 
 
-(defclass fcose-layout (graph-layout animation-slots common-slots gravity-slot nesting-factor-slot
-                        node-dimensions-include-labels-slot num-iter-slot randomize-slot)
+(jupyter-widgets:defwidget fcose-layout (graph-layout animation-slots common-slots gravity-slot
+                                         nesting-factor-slot node-dimensions-include-labels-slot
+                                         num-iter-slot randomize-slot)
   ((quality
      :accessor quality
      :initarg :quality
@@ -635,7 +482,6 @@
      :initform 0.3d0
      :documentation "Initial cooling factor for incremental layout"
      :trait :float))
-  (:metaclass jupyter-widgets:trait-metaclass)
   (:documentation "fCoSE graph layout algorithm.")
   (:default-initargs
     :%model-name "FCoSE_LayoutModel"
@@ -644,4 +490,150 @@
     :num-iter 2500
     :gravity 0.25d0
     :randomize t))
+
+
+(jupyter-widgets:defwidget klay-layout (graph-layout common-slots animation-slots
+                                        node-dimensions-include-labels-slot)
+  ((add-unnecessary-bendpoints
+     :accessor add-unnecessary-bendpoints
+     :initarg :add-unnecessary-bendpoints
+     :initform nil
+     :documentation ""
+     :trait :boolean)
+   (aspect-ratio
+     :accessor aspect-ratio
+     :initarg :aspect-ratio
+     :initform 1.6
+     :documentation ""
+     :trait :float)
+   (border-spacing
+     :accessor border-spacing
+     :initarg :border-spacing
+     :initform 20
+     :documentation ""
+     :trait :integer)
+   (compact-components
+     :accessor compact-components
+     :initarg :compact-components
+     :initform nil
+     :documentation ""
+     :trait :boolean)
+   (crossing-minimization
+     :accessor crossing-minimization
+     :initarg :crossing-minimization
+     :initform "LAYER_SWEEP"
+     :documentation ""
+     :trait :string)
+   (cycle-breaking
+     :accessor cycle-breakingcycle-breaking
+     :initarg :cycle-breaking
+     :initform "GREEDY"
+     :documentation ""
+     :trait :string)
+   (direction
+     :accessor direction
+     :initarg :direction
+     :initform 20
+     :documentation "UNDEFINED"
+     :trait :string)
+   (edge-routing
+     :accessor edge-routing
+     :initarg :edge-routing
+     :initform "ORTHOGONAL"
+     :documentation ""
+     :trait :string)
+   (edge-spacing-factor
+     :accessor edge-spacing-factor
+     :initarg :edge-spacing-factor
+     :initform 0.5
+     :documentation ""
+     :trait :float)
+   (feedback-edges
+     :accessor feedback-edges
+     :initarg :feedback-edges
+     :initform nil
+     :documentation ""
+     :trait :boolean)
+   (fixed-alignment
+     :accessor fixed-alignment
+     :initarg :fixed-alignment
+     :initform "NONE"
+     :documentation ""
+     :trait :string)
+   (in-layer-spacing-factor
+     :accessor in-layer-spacing-factor
+     :initarg :in-layer-spacing-factor
+     :initform 1.0
+     :documentation ""
+     :trait :float)
+   (layout-hierarchy
+     :accessor layout-hierarchy
+     :initarg :layout-hierarchy
+     :initform nil
+     :documentation ""
+     :trait :boolean)
+   (linear-segments-deflection-dampening
+     :accessor linear-segments-deflection-dampening
+     :initarg :linear-segments-deflection-dampening
+     :initform 0.3
+     :documentation ""
+     :trait :float)
+   (merge-edges
+     :accessor merge-edges
+     :initarg :merge-edges
+     :initform nil
+     :documentation ""
+     :trait :boolean)
+   (merge-hierarchy-crossing-edges
+     :accessor merge-hierarchy-crossing-edges
+     :initarg :merge-hierarchy-crossing-edges
+     :initform t
+     :documentation ""
+     :trait :boolean)
+   (node-layering
+     :accessor node-layering
+     :initarg :node-layering
+     :initform "NETWORK_SIMPLEX"
+     :documentation ""
+     :trait :string)
+   (node-placement
+     :accessor node-placement
+     :initarg :node-placement
+     :initform "BRANDES_KOEPF"
+     :documentation ""
+     :trait :string)
+   (randomization-seed
+     :accessor randomization-seed
+     :initarg :randomization-seed
+     :initform 1
+     :documentation ""
+     :trait :integer)
+   (route-self-loop-inside
+     :accessor route-self-loop-inside
+     :initarg :route-self-loop-inside
+     :initform nil
+     :documentation ""
+     :trait :boolean)
+   (separate-connected-components
+     :accessor separate-connected-components
+     :initarg :separate-connected-components
+     :initform t
+     :documentation ""
+     :trait :boolean)
+   (spacing
+     :accessor spacing
+     :initarg :spacing
+     :initform 20
+     :documentation ""
+     :trait :integer)
+   (thoroughness
+     :accessor thoroughness
+     :initarg :thoroughness
+     :initform 7
+     :documentation ""
+     :trait :integer))
+  (:documentation "Klay graph layout algorithm.")
+  (:default-initargs
+    :%model-name "KlayLayoutModel"
+    :%view-name "KlayLayoutView"))
 

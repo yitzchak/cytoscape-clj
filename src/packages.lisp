@@ -4,17 +4,20 @@
     #:active-fill-color
     #:active-padding
     #:add-graph
+    #:add-unnecessary-bendpoints
     #:alignment
     #:all-const-iter
     #:animate
     #:animation-duration
     #:animation-easing
+    #:aspect-ratio
     #:at-mouse
     #:autolock
     #:auto-ungrabify
     #:auto-unselectify
     #:avoid-overlap
     #:avoid-overlap-padding
+    #:border-spacing
     #:bounding-box
     #:box-selection-enabled
     #:breadth-first-layout
@@ -26,6 +29,7 @@
     #:cola-layout
     #:cols
     #:commands
+    #:compact-components
     #:component-spacing
     #:concentric-layout
     #:condense
@@ -36,15 +40,20 @@
     #:convergence-threshold
     #:cooling-factor
     #:cose-layout
+    #:crossing-minimization
+    #:cycle-breaking
     #:cytoscape-widget
     #:dagre-layout
     #:data
     #:desktop-tap-threshold
     #:directed
+    #:direction
     #:edge-elasticity
     #:edge-jaccard-length
     #:edge-length
+    #:edge-routing
     #:edge-sep
+    #:edge-spacing-factor
     #:edge-sym-diff-length
     #:edge-weight
     #:element
@@ -52,9 +61,11 @@
     #:enabled
     #:equidistant
     #:fcose-layout
+    #:feedback-edges
     #:fill-color
     #:fit
     #:fit-elements
+    #:fixed-alignment
     #:flow
     #:gap-inequalities
     #:grabbable
@@ -76,9 +87,13 @@
     #:indicator-size
     #:initial-energy-on-incremental
     #:initial-temp
+    #:in-layer-spacing-factor
     #:item-color
     #:item-text-shadow-color
+    #:klay-layout
     #:layout
+    #:layout-hierarchy
+    #:linear-segments-deflection-dampening
     #:locked
     #:maximal
     #:max-simulation-time
@@ -86,6 +101,8 @@
     #:max-zoom
     #:menu-command
     #:menu-radius
+    #:merge-edges
+    #:merge-hierarchy-crossing-edges
     #:min-length
     #:min-node-spacing
     #:min-spotlight-radius
@@ -95,7 +112,9 @@
     #:motion-blur-opacity
     #:nesting-factor
     #:node-dimensions-include-labels
+    #:node-layering
     #:node-overlap
+    #:node-placement
     #:node-repulsion
     #:node-sep
     #:node-separation
@@ -113,6 +132,7 @@
     #:preset-layout
     #:quality
     #:radius
+    #:randomization-seed
     #:randomize
     #:random-layout
     #:rank-dir
@@ -124,6 +144,7 @@
     #:reset
     #:restore-elements
     #:roots
+    #:route-self-loop-inside
     #:rows
     #:sample-size
     #:sampling-type
@@ -131,13 +152,16 @@
     #:selected
     #:selection-type
     #:selector
+    #:separate-connected-components
     #:separator-width
+    #:spacing
     #:spacing-factor
     #:spotlight-padding
     #:start-angle
     #:style-enabled
     #:sweep
     #:texture-on-viewport
+    #:thoroughness
     #:tile
     #:tile-padding-horizontal
     #:tile-padding-vertical
