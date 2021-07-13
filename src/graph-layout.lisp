@@ -1,7 +1,7 @@
 (in-package :cytoscape)
 
 
-(jupyter-widgets:defwidget graph-layout (jupyter-widgets:widget)
+(jupyter/widgets:defwidget graph-layout (jupyter/widgets:widget)
   ((selector
      :accessor selector
      :initarg :selector
@@ -25,7 +25,7 @@
 (defun on-layout-stop (widget handler)
   (push handler (%on-layout-stop widget)))
 
-(defmethod jupyter-widgets:on-custom-message ((w graph-layout) content buffers)
+(defmethod jupyter/widgets:on-custom-message ((w graph-layout) content buffers)
   (declare (ignore buffers))
   (if (equal (gethash "event" content) "layout_stop")
     (dolist (handler (%on-layout-stop w))
@@ -34,7 +34,7 @@
     (call-next-method)))
 
 
-(jupyter-widgets:defwidget null-layout (graph-layout)
+(jupyter/widgets:defwidget null-layout (graph-layout)
   ()
   (:documentation "Null graph layout algorithm.")
   (:default-initargs
@@ -42,7 +42,7 @@
     :%view-name "NullLayoutView"))
 
 
-(jupyter-widgets:defwidget random-layout (graph-layout bounding-box-slot common-slots
+(jupyter/widgets:defwidget random-layout (graph-layout bounding-box-slot common-slots
                                           animation-slots)
   ()
   (:documentation "Random graph layout algorithm.")
@@ -51,7 +51,7 @@
     :%view-name "RandomLayoutView"))
 
 
-(jupyter-widgets:defwidget preset-layout (graph-layout common-slots animation-slots)
+(jupyter/widgets:defwidget preset-layout (graph-layout common-slots animation-slots)
   ((pan
      :accessor pan
      :initarg :pan
@@ -70,7 +70,7 @@
     :%view-name "PresetLayoutView"))
 
 
-(jupyter-widgets:defwidget grid-layout (graph-layout bounding-box-slot common-slots animation-slots
+(jupyter/widgets:defwidget grid-layout (graph-layout bounding-box-slot common-slots animation-slots
                                         avoid-overlap-slot node-dimensions-include-labels-slot
                                         spacing-factor-slot)
   ((avoid-overlap-padding
@@ -103,7 +103,7 @@
     :%view-name "GridLayoutView"))
 
 
-(jupyter-widgets:defwidget circle-layout (graph-layout bounding-box-slot common-slots
+(jupyter/widgets:defwidget circle-layout (graph-layout bounding-box-slot common-slots
                                           animation-slots avoid-overlap-slot
                                           node-dimensions-include-labels-slot spacing-factor-slot
                                           radial-slots)
@@ -119,7 +119,7 @@
     :%view-name "CircleLayoutView"))
 
 
-(jupyter-widgets:defwidget concentric-layout (graph-layout bounding-box-slot common-slots
+(jupyter/widgets:defwidget concentric-layout (graph-layout bounding-box-slot common-slots
                                               animation-slots avoid-overlap-slot
                                               node-dimensions-include-labels-slot
                                               spacing-factor-slot radial-slots)
@@ -141,7 +141,7 @@
     :%view-name "ConcentricLayoutView"))
 
 
-(jupyter-widgets:defwidget breadth-first-layout (graph-layout bounding-box-slot common-slots
+(jupyter/widgets:defwidget breadth-first-layout (graph-layout bounding-box-slot common-slots
                                                  animation-slots avoid-overlap-slot
                                                  node-dimensions-include-labels-slot
                                                  spacing-factor-slot)
@@ -181,7 +181,7 @@
     :%view-name "BreadthFirstLayoutView"))
 
 
-(jupyter-widgets:defwidget cose-layout (graph-layout bounding-box-slot common-slots animation-slots
+(jupyter/widgets:defwidget cose-layout (graph-layout bounding-box-slot common-slots animation-slots
                                         node-dimensions-include-labels-slot refresh-slot
                                         randomize-slot nesting-factor-slot num-iter-slot
                                         gravity-slot)
@@ -240,7 +240,7 @@
     :refresh 10))
 
 
-(jupyter-widgets:defwidget cola-layout (graph-layout bounding-box-slot common-slots
+(jupyter/widgets:defwidget cola-layout (graph-layout bounding-box-slot common-slots
                                         avoid-overlap-slot node-dimensions-include-labels-slot
                                         refresh-slot randomize-slot)
   ((alignment
@@ -327,7 +327,7 @@
     :%view-name "ColaLayoutView"))
 
 
-(jupyter-widgets:defwidget dagre-layout (graph-layout bounding-box-slot common-slots animation-slots
+(jupyter/widgets:defwidget dagre-layout (graph-layout bounding-box-slot common-slots animation-slots
                                          node-dimensions-include-labels-slot spacing-factor-slot)
   ((edge-sep
      :accessor edge-sep
@@ -377,7 +377,7 @@
     :%view-name "DagreLayoutView"))
 
 
-(jupyter-widgets:defwidget fcose-layout (graph-layout animation-slots common-slots gravity-slot
+(jupyter/widgets:defwidget fcose-layout (graph-layout animation-slots common-slots gravity-slot
                                          nesting-factor-slot node-dimensions-include-labels-slot
                                          num-iter-slot randomize-slot)
   ((quality
@@ -492,7 +492,7 @@
     :randomize t))
 
 
-(jupyter-widgets:defwidget klay-layout (graph-layout common-slots animation-slots
+(jupyter/widgets:defwidget klay-layout (graph-layout common-slots animation-slots
                                         node-dimensions-include-labels-slot)
   ((add-unnecessary-bendpoints
      :accessor add-unnecessary-bendpoints

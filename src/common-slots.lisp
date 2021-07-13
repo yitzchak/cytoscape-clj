@@ -8,7 +8,7 @@
      :initform :null
      :documentation "constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }"
      :trait :alist))
-  (:metaclass jupyter-widgets:trait-metaclass))
+  (:metaclass jupyter/widgets:trait-metaclass))
 
 
 (defclass common-slots ()
@@ -30,7 +30,7 @@
      :initform 30
      :documentation "Padding to leave between graph and viewport"
      :trait :int))
-  (:metaclass jupyter-widgets:trait-metaclass))
+  (:metaclass jupyter/widgets:trait-metaclass))
 
 
 (defclass animation-slots ()
@@ -46,7 +46,7 @@
      :initform :null
      :documentation "Easing of animation, if enabled"
      :trait :unicode))
-  (:metaclass jupyter-widgets:trait-metaclass))
+  (:metaclass jupyter/widgets:trait-metaclass))
 
 
 (defclass avoid-overlap-slot ()
@@ -56,7 +56,7 @@
      :initform t
      :documentation "Prevents node overlap, may overflow boundingBox if not enough space"
      :trait :bool))
-  (:metaclass jupyter-widgets:trait-metaclass))
+  (:metaclass jupyter/widgets:trait-metaclass))
 
 
 (defclass node-dimensions-include-labels-slot ()
@@ -66,7 +66,7 @@
      :initform nil
      :documentation "Includes the label when calculating node bounding boxes for the layout algorithm."
      :trait :bool))
-  (:metaclass jupyter-widgets:trait-metaclass))
+  (:metaclass jupyter/widgets:trait-metaclass))
 
 
 (defclass spacing-factor-slot ()
@@ -76,7 +76,7 @@
      :initform :null
      :documentation "Applies a multiplicative factor (>0) to expand or compress the overall area that the nodes take up"
      :trait :float))
-  (:metaclass jupyter-widgets:trait-metaclass))
+  (:metaclass jupyter/widgets:trait-metaclass))
 
 
 (defclass radial-slots ()
@@ -98,7 +98,7 @@
      :initform :null
      :documentation "How many radians should be between the first and last node (defaults to full circle)"
      :trait :float))
-  (:metaclass jupyter-widgets:trait-metaclass))
+  (:metaclass jupyter/widgets:trait-metaclass))
 
 
 (defclass refresh-slot ()
@@ -108,7 +108,7 @@
      :initform 1
      :documentation "Number of ticks per frame; higher is faster but more jerky"
      :trait :int))
-  (:metaclass jupyter-widgets:trait-metaclass))
+  (:metaclass jupyter/widgets:trait-metaclass))
 
 
 (defclass randomize-slot ()
@@ -118,7 +118,7 @@
      :initform nil
      :documentation "Use random node positions at beginning of layout"
      :trait :bool))
-  (:metaclass jupyter-widgets:trait-metaclass))
+  (:metaclass jupyter/widgets:trait-metaclass))
 
 
 (defclass nesting-factor-slot ()
@@ -128,7 +128,7 @@
      :initform 1.2d0
      :documentation "Nesting factor (multiplier) to compute ideal edge length for nested edges"
      :trait :float))
-  (:metaclass jupyter-widgets:trait-metaclass))
+  (:metaclass jupyter/widgets:trait-metaclass))
 
 
 (defclass num-iter-slot ()
@@ -138,7 +138,7 @@
      :initform 1000
      :documentation "Maximum number of iterations to perform"
      :trait :int))
-  (:metaclass jupyter-widgets:trait-metaclass))
+  (:metaclass jupyter/widgets:trait-metaclass))
 
 
 (defclass gravity-slot ()
@@ -148,5 +148,5 @@
      :initform 1
      :documentation "Gravity force (constant)"
      :trait :float))
-  (:metaclass jupyter-widgets:trait-metaclass))
+  (:metaclass jupyter/widgets:trait-metaclass))
 

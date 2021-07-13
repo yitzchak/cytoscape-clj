@@ -1,6 +1,6 @@
 (in-package :cytoscape)
 
-(jupyter-widgets:defwidget menu-command (jupyter-widgets:widget)
+(jupyter/widgets:defwidget menu-command (jupyter/widgets:widget)
   ((fill-color
      :accessor fill-color
      :initarg :fill-color
@@ -44,7 +44,7 @@
   "Add a new selection handler for a menu command."
   (push handler (on-select widget)))
 
-(defmethod jupyter-widgets:on-custom-message ((w menu-command) content buffers)
+(defmethod jupyter/widgets:on-custom-message ((w menu-command) content buffers)
   (declare (ignore buffers))
   (if (equal (gethash "event" content) "select")
     (dolist (handler (on-select w))
@@ -53,7 +53,7 @@
     (call-next-method)))
 
 
-(jupyter-widgets:defwidget context-menu (jupyter-widgets:widget)
+(jupyter/widgets:defwidget context-menu (jupyter/widgets:widget)
   ((menu-radius
      :accessor menu-radius
      :initarg :menu-radius

@@ -1,6 +1,6 @@
 (in-package :cytoscape)
 
-(jupyter-widgets:defwidget element (jupyter-widgets:widget)
+(jupyter/widgets:defwidget element (jupyter/widgets:widget)
   ((group
      :accessor group
      :initarg :group
@@ -71,7 +71,7 @@
     :%view-module-version +module-version+))
 
 
-(jupyter-widgets:defwidget cytoscape-widget (jupyter-widgets:dom-widget)
+(jupyter/widgets:defwidget cytoscape-widget (jupyter/widgets:dom-widget)
   ((min-zoom
      :accessor min-zoom
      :initarg :min-zoom
@@ -270,32 +270,32 @@
 
 
 (defun reset (instance)
-  (jupyter-widgets:send-custom instance
+  (jupyter/widgets:send-custom instance
                                '(:object-alist
                                  ("do" . "reset"))))
 
 
 (defun center (instance)
-  (jupyter-widgets:send-custom instance
+  (jupyter/widgets:send-custom instance
                                '(:object-alist
                                  ("do" . "center"))))
 
 
 (defun fit-elements (instance &key elements (padding 0))
   (declare (ignore elements))
-  (jupyter-widgets:send-custom instance
+  (jupyter/widgets:send-custom instance
                                `(:object-alist
                                  ("do" . "fit")
                                  ("padding" . ,padding))))
 
 
 (defun toggle-fullscreen (instance)
-  (jupyter-widgets:send-custom instance
+  (jupyter/widgets:send-custom instance
                                '(:object-alist
                                  ("do" . "toggle_fullscreen"))))
 
 (defun layout (instance)
-  (jupyter-widgets:send-custom instance
+  (jupyter/widgets:send-custom instance
                                '(:object-alist
                                  ("do" . "layout"))))
 
