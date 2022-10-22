@@ -477,8 +477,8 @@ export class CytoscapeView extends DOMWidgetView {
     });
   }
 
-  processPhosphorMessage(msg: any): void {
-    super.processPhosphorMessage(msg);
+  processLuminoMessage(msg: any): void {
+    super.processLuminoMessage(msg);
     if ((msg.type === 'resize' || msg.type === 'after-show') && this.cytoscape_obj) {
       this.cytoscape_obj.resize();
       this.cytoscape_obj.fit();
