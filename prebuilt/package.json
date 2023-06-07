@@ -62,7 +62,11 @@
   },
   "jupyterlab": {
     "extension": "lib/plugin",
-    "outputDir": "prebuilt"
+    "outputDir": "prebuilt",
+    "_build": {
+      "load": "static/remoteEntry.6aaa19b4ae7512e3042c.js",
+      "extension": "./extension"
+    }
   },
   "lint-staged": {
     "*.ts": [

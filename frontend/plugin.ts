@@ -1,6 +1,6 @@
-import { Application, IPlugin } from '@phosphor/application';
+import { Application, IPlugin } from '@lumino/application';
 
-import { Widget } from '@phosphor/widgets';
+import { Widget } from '@lumino/widgets';
 
 import { IJupyterWidgetRegistry } from '@jupyter-widgets/base';
 
@@ -30,9 +30,9 @@ function activateWidgetExtension(
 
     exports: async () => {
       return {
-        ...await import(/* webpackChunkName: "cytoscape-clj" */ './widget'),
-        ...await import(/* webpackChunkName: "cytoscape-clj" */ './graph-layout'),
-        ...await import(/* webpackChunkName: "cytoscape-clj" */ './context-menu')
+        ...await import('./widget'),
+        ...await import('./graph-layout'),
+        ...await import('./context-menu')
       }
     }
   });
